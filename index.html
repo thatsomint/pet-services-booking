@@ -1,22 +1,587 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Pawfect Booking</title>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pawfect - Premium Pet Services in Singapore</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
 
-    <!-- FontAwesome -->
-    <link
-      rel="stylesheet"
-      href="/node_modules/@fortawesome/fontawesome-free/css/all.min.css"
-    />
-  </head>
-  <body>
-    <!-- React will mount into this -->
+        body {
+            background-color: #f8f9fa;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            padding: 20px 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo i {
+            margin-right: 10px;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+
+        nav ul li {
+            margin-left: 30px;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        nav ul li a:hover {
+            color: #ffdd40;
+        }
+
+        .hero {
+            padding: 80px 0;
+            text-align: center;
+            background: url('https://images.unsplash.com/photo-1543466835-00a7907e9de1?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1374&q=80') no-repeat center center/cover;
+            color: white;
+            position: relative;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        .hero p {
+            font-size: 20px;
+            margin-bottom: 40px;
+        }
+
+        .search-section {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin-top: -50px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .search-title {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+            font-size: 24px;
+        }
+
+        .filters {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .filter-group {
+            margin-bottom: 20px;
+        }
+
+        .filter-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #444;
+        }
+
+        .dropdown {
+            position: relative;
+            width: 100%;
+        }
+
+        .dropdown-select {
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            width: 100%;
+            font-size: 16px;
+            background: white;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .dropdown-select:hover {
+            border-color: #6a11cb;
+        }
+
+        .dropdown-list {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+            display: none;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .dropdown-list.show {
+            display: block;
+        }
+
+        .dropdown-item {
+            padding: 12px 15px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .dropdown-item:hover {
+            background: #f0f5ff;
+        }
+
+        .date-range-input {
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            width: 100%;
+            font-size: 16px;
+            background: white;
+            cursor: pointer;
+        }
+
+        .btn-search {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            border: none;
+            padding: 16px 32px;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .btn-search:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(38, 117, 252, 0.4);
+        }
+
+        .services {
+            padding: 80px 0;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 50px;
+            font-size: 36px;
+            color: #333;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .service-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+        }
+
+        .service-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12);
+        }
+
+        .service-img {
+            height: 200px;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .service-content {
+            padding: 25px;
+        }
+
+        .service-title {
+            font-size: 22px;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .service-desc {
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .service-price {
+            font-size: 24px;
+            font-weight: 700;
+            color: #6a11cb;
+        }
+
+        footer {
+            background: #333;
+            color: white;
+            padding: 50px 0 20px;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .footer-column h3 {
+            font-size: 20px;
+            margin-bottom: 20px;
+            color: #ffdd40;
+        }
+
+        .footer-column ul {
+            list-style: none;
+        }
+
+        .footer-column ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-column ul li a {
+            color: #ddd;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .footer-column ul li a:hover {
+            color: #ffdd40;
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid #555;
+            color: #aaa;
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            nav ul {
+                margin-top: 20px;
+                justify-content: center;
+            }
+            
+            nav ul li {
+                margin: 0 10px;
+            }
+            
+            .hero h1 {
+                font-size: 36px;
+            }
+            
+            .hero p {
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
     <div id="root"></div>
 
-    <!-- Vite loads React here -->
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        const PetServicesApp = () => {
+            const [petType, setPetType] = useState('');
+            const [location, setLocation] = useState('');
+            const [petService, setPetService] = useState('');
+            const [dateRange, setDateRange] = useState('');
+            const [showPetDropdown, setShowPetDropdown] = useState(false);
+            const [showLocationDropdown, setShowLocationDropdown] = useState(false);
+            const [showServiceDropdown, setShowServiceDropdown] = useState(false);
+
+            const petTypes = [
+                'Dogs', 'Cats', 'Rabbits', 'Hamsters', 'Guinea Pigs', 
+                'Chinchillas', 'Ferrets', 'Birds', 'Turtles', 'Iguanas'
+            ];
+
+            const locations = [
+                'Central (District 1-2)', 'West (District 5-8, 22-23)', 
+                'East (District 14-18)', 'North (District 19-21, 26-28)', 
+                'South (District 3-4, 9-10)', 'North-East (District 11-13, 24-25)'
+            ];
+
+            const services = ['Grooming', 'Sitter', 'Pet Hotel'];
+
+            const datePickerRef = useRef(null);
+
+            useEffect(() => {
+                // Initialize date picker
+                if (datePickerRef.current) {
+                    flatpickr(datePickerRef.current, {
+                        mode: "range",
+                        dateFormat: "Y-m-d",
+                        minDate: "today",
+                        onChange: function(selectedDates, dateStr, instance) {
+                            setDateRange(dateStr);
+                        }
+                    });
+                }
+            }, []);
+
+            const toggleDropdown = (dropdown) => {
+                if (dropdown === 'pet') {
+                    setShowPetDropdown(!showPetDropdown);
+                    setShowLocationDropdown(false);
+                    setShowServiceDropdown(false);
+                } else if (dropdown === 'location') {
+                    setShowLocationDropdown(!showLocationDropdown);
+                    setShowPetDropdown(false);
+                    setShowServiceDropdown(false);
+                } else if (dropdown === 'service') {
+                    setShowServiceDropdown(!showServiceDropdown);
+                    setShowPetDropdown(false);
+                    setShowLocationDropdown(false);
+                }
+            };
+
+            const handleSearch = () => {
+                alert(`Searching for:\nPet: ${petType}\nLocation: ${location}\nService: ${petService}\nDate: ${dateRange}`);
+            };
+
+            return (
+                <div>
+                    <header>
+                        <div className="container header-content">
+                            <div className="logo">
+                                <i className="fas fa-paw"></i>
+                                Pawfect
+                            </div>
+                            <nav>
+                                <ul>
+                                    <li><a href="#">Home</a></li>
+                                    <li><a href="#">Services</a></li>
+                                    <li><a href="#">About Us</a></li>
+                                    <li><a href="#">Contact</a></li>
+                                </ul>
+                            </nav>
+                        </div>
+                    </header>
+
+                    <section className="hero">
+                        <div className="container hero-content">
+                            <h1>Premium Pet Services Matching in Singapore</h1>
+                            <p>Find the best grooming, sitting, and hotel services for your beloved pets</p>
+                        </div>
+                    </section>
+
+                    <div className="container">
+                        <div className="search-section">
+                            <h2 className="search-title">Find the perfect service for your pet</h2>
+                            <div className="filters">
+                                <div className="filter-group">
+                                    <label>Pet Type</label>
+                                    <div className="dropdown">
+                                        <div className="dropdown-select" onClick={() => toggleDropdown('pet')}>
+                                            <span>{petType || 'Select pet type'}</span>
+                                            <i className={`fas fa-chevron-${showPetDropdown ? 'up' : 'down'}`}></i>
+                                        </div>
+                                        <div className={`dropdown-list ${showPetDropdown ? 'show' : ''}`}>
+                                            {petTypes.map((pet, index) => (
+                                                <div key={index} className="dropdown-item" onClick={() => { setPetType(pet); setShowPetDropdown(false); }}>
+                                                    {pet}
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="filter-group">
+                                    <label>Location</label>
+                                    <div className="dropdown">
+                                        <div className="dropdown-select" onClick={() => toggleDropdown('location')}>
+                                            <span>{location || 'Select location'}</span>
+                                            <i className={`fas fa-chevron-${showLocationDropdown ? 'up' : 'down'}`}></i>
+                                        </div>
+                                        <div className={`dropdown-list ${showLocationDropdown ? 'show' : ''}`}>
+                                            {locations.map((loc, index) => (
+                                                <div key={index} className="dropdown-item" onClick={() => { setLocation(loc); setShowLocationDropdown(false); }}>
+                                                    {loc}
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="filter-group">
+                                    <label>Pet Service</label>
+                                    <div className="dropdown">
+                                        <div className="dropdown-select" onClick={() => toggleDropdown('service')}>
+                                            <span>{petService || 'Select service'}</span>
+                                            <i className={`fas fa-chevron-${showServiceDropdown ? 'up' : 'down'}`}></i>
+                                        </div>
+                                        <div className={`dropdown-list ${showServiceDropdown ? 'show' : ''}`}>
+                                            {services.map((service, index) => (
+                                                <div key={index} className="dropdown-item" onClick={() => { setPetService(service); setShowServiceDropdown(false); }}>
+                                                    {service}
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="filter-group">
+                                    <label>Date Range</label>
+                                    <input 
+                                        type="text" 
+                                        className="date-range-input" 
+                                        placeholder="Select date range" 
+                                        ref={datePickerRef}
+                                        value={dateRange}
+                                        readOnly
+                                    />
+                                </div>
+                            </div>
+                            <button className="btn-search" onClick={handleSearch}>
+                                <i className="fas fa-search"></i> Search Services
+                            </button>
+                        </div>
+                    </div>
+
+                    <section className="services">
+                        <div className="container">
+                            <h2 className="section-title">Our Matching Services</h2>
+                            <div className="services-grid">
+                                <div className="service-card">
+                                    <div className="service-img" style={{backgroundImage: 'url(https://images.unsplash.com/photo-1525253013412-55c1a69a5738?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80)'}}></div>
+                                    <div className="service-content">
+                                        <h3 className="service-title">Professional Grooming</h3>
+                                        <p className="service-desc">Keep your pet looking and feeling their best with our professional grooming services.</p>
+                                        <div className="service-price">From $35</div>
+                                    </div>
+                                </div>
+
+                                <div className="service-card">
+                                    <div className="service-img" style={{backgroundImage: 'url(https://images.unsplash.com/photo-1596272875729-ed2ff7d6d9c5?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80)'}}></div>
+                                    <div className="service-content">
+                                        <h3 className="service-title">Pet Sitting</h3>
+                                        <p className="service-desc">Trust our experienced sitters to care for your pet when you're away.</p>
+                                        <div className="service-price">From $25/day</div>
+                                    </div>
+                                </div>
+
+                                <div className="service-card">
+                                    <div className="service-img" style={{backgroundImage: 'url(https://images.unsplash.com/photo-1450778869180-41d0601e046e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1155&q=80)'}}></div>
+                                    <div className="service-content">
+                                        <h3 className="service-title">Pet Hotel</h3>
+                                        <p className="service-desc">Luxurious accommodation for your pets with round-the-clock care.</p>
+                                        <div className="service-price">From $40/night</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <footer>
+                        <div className="container">
+                            <div className="footer-content">
+                                <div className="footer-column">
+                                    <h3>Pawfect</h3>
+                                    <p>Hassle-free booking with desired service providers.</p>
+                                </div>
+                                <div className="footer-column">
+                                    <h3>Services</h3>
+                                    <ul>
+                                        <li><a href="#">Pet Grooming</a></li>
+                                        <li><a href="#">Pet Sitting</a></li>
+                                        <li><a href="#">Pet Hotel</a></li>
+                                        <li><a href="#">Veterinary Services</a></li>
+                                    </ul>
+                                </div>
+                                <div className="footer-column">
+                                    <h3>Contact Us</h3>
+                                    <ul>
+                                        <li><i className="fas fa-phone"></i> +65 6123 4567</li>
+                                        <li><i className="fas fa-envelope"></i> hello@pawfect.sg</li>
+                                        <li><i className="fas fa-map-marker-alt"></i> 123 Pet Road, Singapore 123456</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div className="copyright">
+                                <p>&copy; 2025 Pawfect. All rights reserved.</p>
+                            </div>
+                        </div>
+                    </footer>
+                </div>
+            );
+        };
+
+        ReactDOM.createRoot(document.getElementById('root')).render(<PetServicesApp />);
+    </script>
+</body>
 </html>
