@@ -1,0 +1,8 @@
+version: '3.8'
+services:
+  web:
+    build: .
+    ports:
+      - "3000:80"  # Map localhost:8080 to the container's port 80
+    volumes:
+      - .:/usr/share/nginx/html  # Mount your code into a standard web server directory
