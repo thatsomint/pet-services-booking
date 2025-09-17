@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Service Providers - PawfectFind</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <div class="container header-content">
+            <a href="index.html" class="logo">
+                <img src="images/PawfectFind_logo.png" alt="PawfectFind Logo" class="logo-img">
+            </a>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="services.html">Services</a></li>
+                    <li><a href="providers.html" class="active">Providers</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </nav>
+            <div class="header-actions">
+                <div class="cart-icon">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="cart-badge">2</span>
+                </div>
+                <div class="user-icon">
+                    <i class="fas fa-user"></i>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section class="page-header">
+        <div class="container">
+            <h1 class="page-title">Find Trusted Pet Service Providers</h1>
+            <p class="breadcrumb">
+                <a href="index.html">Home</a> / Providers
+            </p>
+        </div>
+    </section>
+
+    <main class="main-content">
+        <div class="container">
+            <div class="search-header">
+                <input type="text" class="search-input" placeholder="Search providers by name, location, or specialty...">
+                <button class="btn btn-primary">
+                    <i class="fas fa-search"></i> Search
+                </button>
+            </div>
+
+            <div class="providers-container">
+                <!-- Filters Sidebar -->
+                <aside class="filters-sidebar">
+                    <h2 style="color: var(--primary-brown); margin-bottom: 20px;">Filters</h2>
+                    
+                    <div class="filter-section">
+                        <h3>Service Type</h3>
+                        <div class="filter-checkbox">
+                            <input type="checkbox" id="grooming" checked>
+                            <label for="grooming">Grooming</label>
+                        </div>
+                        <div class="filter-checkbox">
+                            <input type="checkbox" id="sitting" checked>
+                            <label for="sitting">Pet Sitting</label>
+                        </div>
+                        <div class="filter-checkbox">
+                            <input type="checkbox" id="hotel" checked>
+                            <label for="hotel">Pet Hotel</label>
+                        </div>
+                        <div class="filter-checkbox">
+                            <input type="checkbox" id="training" checked>
+                            <label for="training">Training</label>
+                        </div>
+                    </div>
+
+                    <div class="filter-section">
+                        <h3>Minimum Rating</h3>
+                        <div class="rating-filter">
+                            <div class="filter-checkbox">
+                                <input type="radio" id="rating-4" name="rating" checked>
+                                <label for="rating-4">
+                                    <span class="rating-stars">★★★★★</span> 4.0 & up
+                                </label>
+                            </div>
+                            <div class="filter-checkbox">
+                                <input type="radio" id="rating-4.5" name="rating">
+                                <label for="rating-4.5">
+                                    <span class="rating-stars">★★★★★</span> 4.5 & up
+                                </label>
+                            </div>
+                            <div class="filter-checkbox">
+                                <input type="radio" id="rating-5" name="rating">
+                                <label for="rating-5">
+                                    <span class="rating-stars">★★★★★</span> 5.0 only
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="filter-section">
+                        <h3>Price Range (per service)</h3>
+                        <input type="range" min="20" max="200" value="100" class="price-range">
+                        <div class="price-labels">
+                            <span>$20</span>
+                            <span>$100</span>
+                            <span>$200+</span>
+                        </div>
+                    </div>
+
+                    <div class="filter-section">
+                        <h3>Location</h3>
+                        <div class="filter-checkbox">
+                            <input type="checkbox" id="central" checked>
+                            <label for="central">Central Singapore</label>
+                        </div>
+                        <div class="filter-checkbox">
+                            <input type="checkbox" id="east" checked>
+                            <label for="east">East Singapore</label>
+                        </div>
+                        <div class="filter-checkbox">
+                            <input type="checkbox" id="west" checked>
+                            <label for="west">West Singapore</label>
+                        </div>
+                        <div class="filter-checkbox">
+                            <input type="checkbox" id="north" checked>
+                            <label for="north">North Singapore</label>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-primary" style="width: 100%;">
+                        <i class="fas fa-filter"></i> Apply Filters
+                    </button>
+                </aside>
+
+                <!-- Providers Grid -->
+                <div class="providers-content">
+                    <p class="results-count">Showing 12 verified providers</p>
+                    
+                    <div class="providers-grid">
+                        <!-- Provider Card 1 -->
+                        <div class="provider-card">
+                            <div class="provider-header">
+                                <h3 class="provider-name">Paws & Claws Grooming</h3>
+                                <div class="provider-rating">
+                                    <div class="rating-stars">★★★★★</div>
+                                    <span class="rating-value">4.8</span>
+                                    <span class="review-count">(124 reviews)</span>
+                                </div>
+                                <div class="provider-specialties">
+                                    <span class="specialty-badge">Grooming</span>
+                                    <span class="specialty-badge">Breed Specialist</span>
+                                </div>
+                            </div>
+                            <div class="provider-body">
+                                <div class="provider-features">
+                                    <div class="feature-item">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                        Central Singapore
+                                    </div>
+                                    <div class="feature-item">
+                                        <i class="fas fa-clock"></i>
+                                        Same-day available
+                                    </div>
+                                    <div class="feature-item">
+                                        <i class="fas fa-certificate"></i>
+                                        Certified Master Groomer
+                                    </div>
+                                    <div class="feature-item">
+                                        <i class="fas fa-paw"></i>
+                                        Specializes in long-haired breeds
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="provider-footer">
+                                <div class="starting-price">From $45</div>
+                                <a href="#" class="btn-view-profile">View Profile</a>
+                            </div>
+                        </div>
+
+                        <!-- Provider Card 2 -->
+                        <div class="provider-card">
+                            <div class="provider-header">
+                                <h3 class="provider-name">Happy Tails Pet Hotel</h3>
+                                <div class="provider-rating">
+                                    <div class="rating-stars">★★★★★</div>
+                                    <span class="rating-value">4.9</span>
+                                    <span class="review-count">(89 reviews)</span>
+                                </div>
+                                <div class="provider-specialties">
+                                    <span class="specialty-badge">Boarding</span>
+                                    <span class="specialty-badge">Luxury Suites</span>
+                                </div>
+                            </div>
+                            <div class="provider-body">
+                                <div class="provider-features">
+                                    <div class="feature-item">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                        East Singapore
+                                    </div>
+                                    <div class="feature-item">
+                                        <i class="fas fa-home"></i>
+                                        24/7 supervision
+                                    </div>
+                                    <div class="feature-item">
+                                        <i class="fas fa-heart"></i>
+                                        Veterinary on call
+                                    </div>
+                                    <div class="feature-item">
+                                        <i class="fas fa-swimming-pool"></i>
+                                        Indoor play area
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="provider-footer">
+                                <div class="starting-price">From $60/night</div>
+                                <a href="#" class="btn-view-profile">View Profile</a>
+                            </div>
+                        </div>
+
+                        <!-- Add more provider cards as needed -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>PawfectFind</h3>
+                    <p>Singapore's most trusted pet services marketplace connecting pet parents with verified professionals.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                <div class="footer-column">
+                    <h3>Services</h3>
+                    <ul>
+                        <li><a href="booking.html?service=grooming">Pet Grooming</a></li>
+                        <li><a href="booking.html?service=sitting">Pet Sitting</a></li>
+                        <li><a href="booking.html?service=hotel">Pet Hotels</a></li>
+                        <li><a href="booking.html?service=training">Pet Training</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="providers.html">Service Providers</a></li>
+                        <li><a href="contact.html">Contact Us</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Contact Info</h3>
+                    <ul>
+                        <li><i class="fas fa-phone"></i> +65 6123 4567</li>
+                        <li><i class="fas fa-envelope"></i> hello@pawfectfind.sg</li>
+                        <li><i class="fas fa-map-marker-alt"></i> 123 Pet Road, Singapore 123456</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2025 PawfectFind. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Simple filter functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.querySelector('.search-input');
+            const providerCards = document.querySelectorAll('.provider-card');
+            
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                
+                providerCards.forEach(card => {
+                    const providerName = card.querySelector('.provider-name').textContent.toLowerCase();
+                    const providerSpecialties = card.querySelector('.provider-specialties').textContent.toLowerCase();
+                    const providerFeatures = card.querySelector('.provider-features').textContent.toLowerCase();
+                    
+                    if (providerName.includes(searchTerm) || 
+                        providerSpecialties.includes(searchTerm) || 
+                        providerFeatures.includes(searchTerm)) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+
+            // Price range display
+            const priceRange = document.querySelector('.price-range');
+            const priceLabels = document.querySelector('.price-labels');
+            
+            priceRange.addEventListener('input', function() {
+                priceLabels.querySelector('span:nth-child(2)').textContent = '$' + this.value;
+            });
+        });
+
+        // Azure Integration Placeholders
+        async function loadProviders() {
+            try {
+                // This would connect to Azure Functions API
+                const response = await fetch('https://your-azure-function.azurewebsites.net/api/providers');
+                const providers = await response.json();
+                // Render providers dynamically
+            } catch (error) {
+                console.error('Error loading providers:', error);
+            }
+        }
+
+        async function loadReviews(providerId) {
+            try {
+                // This would connect to Azure Cosmos DB via API
+                const response = await fetch(`https://your-azure-function.azurewebsites.net/api/reviews/${providerId}`);
+                const reviews = await response.json();
+                // Display reviews
+            } catch (error) {
+                console.error('Error loading reviews:', error);
+            }
+        }
+    </script>
+</body>
+</html>

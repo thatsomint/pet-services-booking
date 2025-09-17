@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - PawfectFind</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <div class="container header-content">
+            <a href="index.html" class="logo">
+                <img src="images/PawfectFind_logo.png" alt="PawfectFind Logo" 
+                    class="logo-img">
+            </a>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="services.html">Services</a></li>
+                    <li><a href="providers.html">Providers</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="contact.html" class="active">Contact</a></li>
+                </ul>
+            </nav>
+            <div class="header-actions">
+                <div class="cart-icon">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="cart-badge">2</span>
+                </div>
+                <div class="user-icon">
+                    <i class="fas fa-user"></i>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section class="page-header">
+        <div class="container">
+            <h1 class="page-title">Get in Touch</h1>
+            <p class="breadcrumb">
+                <a href="index.html">Home</a> / Contact
+            </p>
+        </div>
+    </section>
+
+    <main class="main-content">
+        <div class="container">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px; margin-bottom: 60px;">
+                <!-- Contact Information -->
+                <div>
+                    <h2 class="section-title">Contact Information</h2>
+                    <div style="background: var(--white); padding: 30px; border-radius: 16px; box-shadow: var(--shadow);">
+                        <div style="display: flex; align-items: center; margin-bottom: 25px;">
+                            <div style="width: 50px; height: 50px; background: var(--cream); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px;">
+                                <i class="fas fa-map-marker-alt" style="color: var(--primary-brown);"></i>
+                            </div>
+                            <div>
+                                <h3 style="color: var(--text-dark); margin-bottom: 5px;">Address</h3>
+                                <p style="color: var(--text-light);">123 Pet Road<br>Singapore 123456</p>
+                            </div>
+                        </div>
+
+                        <div style="display: flex; align-items: center; margin-bottom: 25px;">
+                            <div style="width: 50px; height: 50px; background: var(--cream); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px;">
+                                <i class="fas fa-phone" style="color: var(--primary-brown);"></i>
+                            </div>
+                            <div>
+                                <h3 style="color: var(--text-dark); margin-bottom: 5px;">Phone</h3>
+                                <p style="color: var(--text-light);">+65 6123 4567</p>
+                            </div>
+                        </div>
+
+                        <div style="display: flex; align-items: center; margin-bottom: 25px;">
+                            <div style="width: 50px; height: 50px; background: var(--cream); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px;">
+                                <i class="fas fa-envelope" style="color: var(--primary-brown);"></i>
+                            </div>
+                            <div>
+                                <h3 style="color: var(--text-dark); margin-bottom: 5px;">Email</h3>
+                                <p style="color: var(--text-light);">hello@pawfectfind.sg</p>
+                            </div>
+                        </div>
+
+                        <div style="display: flex; align-items: center;">
+                            <div style="width: 50px; height: 50px; background: var(--cream); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px;">
+                                <i class="fas fa-clock" style="color: var(--primary-brown);"></i>
+                            </div>
+                            <div>
+                                <h3 style="color: var(--text-dark); margin-bottom: 5px;">Business Hours</h3>
+                                <p style="color: var(--text-light);">Mon - Fri: 9AM - 6PM<br>Sat: 10AM - 4PM<br>Sun: Closed</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 30px;">
+                        <h3 style="color: var(--text-dark); margin-bottom: 20px;">Follow Us</h3>
+                        <div class="social-links">
+                            <a href="#"><i class="fab fa-facebook-f"></i></a>
+                            <a href="#"><i class="fab fa-instagram"></i></a>
+                            <a href="#"><i class="fab fa-twitter"></i></a>
+                            <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contact Form -->
+                <div>
+                    <h2 class="section-title">Send us a Message</h2>
+                    <div class="form-container">
+                        <form id="contactForm">
+                            <div class="form-group">
+                                <label for="name">Full Name</label>
+                                <input type="text" id="name" required placeholder="Enter your full name">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="email">Email Address</label>
+                                <input type="email" id="email" required placeholder="Enter your email address">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="phone">Phone Number</label>
+                                <input type="tel" id="phone" placeholder="Enter your phone number">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="subject">Subject</label>
+                                <select id="subject" required>
+                                    <option value="">Select a subject</option>
+                                    <option value="general">General Inquiry</option>
+                                    <option value="booking">Booking Question</option>
+                                    <option value="provider">Become a Provider</option>
+                                    <option value="complaint">Complaint</option>
+                                    <option value="compliment">Compliment</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="message">Message</label>
+                                <textarea id="message" rows="5" required placeholder="How can we help you?"></textarea>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary" style="width: 100%;">
+                                <i class="fas fa-paper-plane"></i> Send Message
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FAQ Section -->
+            <h2 class="section-title">Frequently Asked Questions</h2>
+            <div style="background: var(--white); padding: 40px; border-radius: 16px; box-shadow: var(--shadow); margin-bottom: 60px;">
+                <div style="margin-bottom: 30px;">
+                    <h3 style="color: var(--text-dark); margin-bottom: 15px; display: flex; align-items: center;">
+                        <i class="fas fa-question-circle" style="color: var(--accent-orange); margin-right: 10px;"></i>
+                        How do I book a service?
+                    </h3>
+                    <p style="color: var(--text-light); padding-left: 30px;">
+                        Simply navigate to our Services page, choose the service you need, and click "Book Now". 
+                        You can also call us directly for assistance with booking.
+                    </p>
+                </div>
+
+                <div style="margin-bottom: 30px;">
+                    <h3 style="color: var(--text-dark); margin-bottom: 15px; display: flex; align-items: center;">
+                        <i class="fas fa-question-circle" style="color: var(--accent-orange); margin-right: 10px;"></i>
+                        Are your service providers verified?
+                    </h3>
+                    <p style="color: var(--text-light); padding-left: 30px;">
+                        Yes! All our service providers undergo thorough background checks, reference verification, 
+                        and skill assessments to ensure the highest quality of service.
+                    </p>
+                </div>
+
+                <div style="margin-bottom: 30px;">
+                    <h3 style="color: var(--text-dark); margin-bottom: 15px; display: flex; align-items: center;">
+                        <i class="fas fa-question-circle" style="color: var(--accent-orange); margin-right: 10px;"></i>
+                        What if I need to cancel my booking?
+                    </h3>
+                    <p style="color: var(--text-light); padding-left: 30px;">
+                        You can cancel your booking up to 24 hours in advance without any charges. For cancellations 
+                        within 24 hours, a small fee may apply depending on the service provider's policy.
+                    </p>
+                </div>
+
+                <div>
+                    <h3 style="color: var(--text-dark); margin-bottom: 15px; display: flex; align-items: center;">
+                        <i class="fas fa-question-circle" style="color: var(--accent-orange); margin-right: 10px;"></i>
+                        Do you offer emergency services?
+                    </h3>
+                    <p style="color: var(--text-light); padding-left: 30px;">
+                        While we don't offer emergency veterinary services, we can help connect you with emergency 
+                        pet care providers. For immediate medical emergencies, please contact your nearest veterinary clinic.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>PawfectFind</h3>
+                    <p>Singapore's most trusted pet services marketplace connecting pet parents with verified professionals.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                <div class="footer-column">
+                    <h3>Services</h3>
+                    <ul>
+                        <li><a href="booking.html?service=grooming">Pet Grooming</a></li>
+                        <li><a href="booking.html?service=sitting">Pet Sitting</a></li>
+                        <li><a href="booking.html?service=hotel">Pet Hotels</a></li>
+                        <li><a href="booking.html?service=training">Pet Training</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="providers.html">Service Providers</a></li>
+                        <li><a href="contact.html">Contact Us</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Contact Info</h3>
+                    <ul>
+                        <li><i class="fas fa-phone"></i> +65 6123 4567</li>
+                        <li><i class="fas fa-envelope"></i> hello@pawfectfind.sg</li>
+                        <li><i class="fas fa-map-marker-alt"></i> 123 Pet Road, Singapore 123456</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2025 PawfectFind. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Thank you for your message! We will get back to you within 24 hours.');
+            this.reset();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book a Service - PawfectFind</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <div class="container header-content">
+            <a href="index.html" class="logo">
+                <img src="images/PawfectFind_logo.png" alt="PawfectFind Logo" 
+                    class="logo-img">
+            </a>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="services.html">Services</a></li>
+                    <li><a href="providers.html">Providers</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </nav>
+            <div class="header-actions">
+                <div class="cart-icon">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="cart-badge">2</span>
+                </div>
+                <div class="user-icon">
+                    <i class="fas fa-user"></i>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section class="page-header">
+        <div class="container">
+            <h1 class="page-title">Book a Service</h1>
+            <p class="breadcrumb">
+                <a href="index.html">Home</a> / <a href="services.html">Services</a> / Booking
+            </p>
+        </div>
+    </section>
+
+    <main class="main-content">
+        <div class="container">
+            <div class="form-container">
+                <h2 style="text-align: center; margin-bottom: 30px;">Book Your Pet Service</h2>
+                <form id="bookingForm">
+                    <div class="form-group">
+                        <label for="serviceType">Service Type</label>
+                        <select id="serviceType" required>
+                            <option value="">Select a service</option>
+                            <option value="grooming">Grooming</option>
+                            <option value="sitting">Pet Sitting</option>
+                            <option value="hotel">Pet Hotel</option>
+                            <option value="training">Training</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="petType">Pet Type</label>
+                        <select id="petType" required>
+                            <option value="">Select pet type</option>
+                            <option value="dog">Dog</option>
+                            <option value="cat">Cat</option>
+                            <option value="rabbit">Rabbit</option>
+                            <option value="bird">Bird</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="date">Preferred Date</label>
+                        <input type="date" id="date" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="time">Preferred Time</label>
+                        <input type="time" id="time" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="message">Special Instructions</label>
+                        <textarea id="message" rows="4" placeholder="Any special requirements or notes..."></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">
+                        <i class="fas fa-calendar-check"></i> Confirm Booking
+                    </button>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <!-- Same footer as index.html -->
+          <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>PawfectFind</h3>
+                    <p>Singapore's most trusted pet services marketplace connecting pet parents with verified professionals.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                <div class="footer-column">
+                    <h3>Services</h3>
+                    <ul>
+                        <li><a href="booking.html?service=grooming">Pet Grooming</a></li>
+                        <li><a href="booking.html?service=sitting">Pet Sitting</a></li>
+                        <li><a href="booking.html?service=hotel">Pet Hotels</a></li>
+                        <li><a href="booking.html?service=training">Pet Training</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="providers.html">Service Providers</a></li>
+                        <li><a href="contact.html">Contact Us</a></li>
+                        <li><a href="privacy.html">Privacy Policy</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Contact Info</h3>
+                    <ul>
+                        <li><i class="fas fa-phone"></i> +65 6123 4567</li>
+                        <li><i class="fas fa-envelope"></i> hello@pawfectfind.sg</li>
+                        <li><i class="fas fa-map-marker-alt"></i> 123 Pet Road, Singapore 123456</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2025 PawfectFind. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.getElementById('bookingForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Booking request submitted! We will contact you shortly to confirm your appointment.');
+            // Redirect back to services page
+            setTimeout(() => {
+                window.location.href = 'services.html';
+            }, 2000);
+        });
+
+        // Set service type from URL parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        const serviceType = urlParams.get('service');
+        if (serviceType) {
+            document.getElementById('serviceType').value = serviceType;
+        }
+    </script>
+</body>
+</html>
