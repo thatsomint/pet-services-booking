@@ -1,7 +1,4 @@
-# Docker
-# Build and push an image to Azure Container Registry
-# https://docs.microsoft.com/azure/devops/pipelines/languages/docker
-
+# azure-pipelines.yml
 trigger:
 - main
 
@@ -9,15 +6,17 @@ resources:
 - repo: self
 
 variables:
-  # Container registry service connection established during pipeline creation
+  # Container registry service connection
   dockerRegistryServiceConnection: 'b7697af7-b180-4ac7-bbba-b025f0d3bcdd'
   imageRepository: 'pawfectfindfrontend'
   containerRegistry: 'pawfectfind.azurecr.io'
   dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile'
   tag: '$(Build.BuildId)'
-
-  # Agent VM image name
-  vmImageName: 'ubuntu-latest'
+  
+  # Web App settings - UPDATE THESE!
+  webAppName: 'pawfectfind'  # Your actual Web App name
+  resourceGroup: 'PawfectFind-RG'         # Your resource group name
+  azureSubscription: 'pawfectfind-azure'  # Azure service connection name
 
 stages:
 - stage: Build
@@ -25,8 +24,7 @@ stages:
   jobs:
   - job: Build
     displayName: Build
-    pool:
-      vmImage: $(vmImageName)
+    pool: Default  # CHANGED: Use your self-hosted agent
     steps:
     - task: Docker@2
       displayName: Build and push an image to container registry
@@ -37,3 +35,27 @@ stages:
         containerRegistry: $(dockerRegistryServiceConnection)
         tags: |
           $(tag)
+          latest  # ADDED: Also tag as latest
+
+- stage: Deploy
+  displayName: Deploy to Web App
+  dependsOn: Build
+  condition: succeeded()
+  
+  jobs:
+  - deployment: Deploy
+    displayName: Deploy to Azure Web App
+    environment: 'production'
+    pool: Default  # Use your self-hosted agent
+    
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - task: AzureWebAppContainer@1
+            displayName: 'Deploy to Azure Web App'
+            inputs:
+              azureSubscription: '$(azureSubscription)'
+              appName: '$(webAppName)'
+              containers: '$(containerRegistry)/$(imageRepository):$(tag)'
+              resourceGroupName: '$(resourceGroup)'

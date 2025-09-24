@@ -221,61 +221,64 @@ nav ul li a.active {
     border-radius: 2px;
 }
 
-/* Search Section */
+/* ===== ENHANCED SEARCH SECTION ===== */
 .search-section {
-    background: var(--accent-white);
-    border-radius: 16px;
+    background: linear-gradient(135deg, #f8f4f0 0%, #fff 100%);
     padding: 40px;
-    margin: -60px auto 60px;
-    box-shadow: var(--shadow);
-    position: relative;
-    z-index: 10;
-    max-width: 1000px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(139, 69, 19, 0.1);
+    margin: 40px 0;
 }
 
 .search-title {
     text-align: center;
-    margin-bottom: 30px;
     color: var(--primary-brown);
-    font-size: 28px;
+    font-size: 2.2em;
+    margin-bottom: 30px;
+    font-weight: 600;
 }
 
-.filters {
+.filters-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 25px;
     margin-bottom: 30px;
 }
 
 .filter-group {
-    display: flex;
-    flex-direction: column;
+    margin-bottom: 0;
 }
 
 .filter-group label {
+    display: block;
     margin-bottom: 10px;
     font-weight: 600;
-    color: var(--text-dark);
+    color: #5D4037;
+    font-size: 1.1em;
 }
 
 .dropdown {
     position: relative;
+    width: 100%;
 }
 
 .dropdown-select {
-    padding: 14px 16px;
-    border: 2px solid var(--light-brown);
-    border-radius: 8px;
+    background: white;
+    border: 2px solid #E0E0E0;
+    border-radius: 12px;
+    padding: 15px 20px;
     cursor: pointer;
+    transition: all 0.3s ease;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: var(--accent-white);
-    transition: border-color 0.3s ease;
+    font-size: 1em;
 }
 
 .dropdown-select:hover {
     border-color: var(--primary-brown);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(139, 69, 19, 0.1);
 }
 
 .dropdown-list {
@@ -283,15 +286,15 @@ nav ul li a.active {
     top: 100%;
     left: 0;
     right: 0;
-    background-color: var(--accent-white);
-    border: 2px solid var(--light-brown);
-    border-top: none;
-    border-radius: 0 0 8px 8px;
-    max-height: 250px;
+    background: white;
+    border: 2px solid var(--primary-brown);
+    border-radius: 12px;
+    margin-top: 5px;
+    z-index: 1000;
+    max-height: 200px;
     overflow-y: auto;
-    z-index: 100;
     display: none;
-    box-shadow: 0 10px 25px rgba(85, 44, 31, 0.15);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
 }
 
 .dropdown-list.show {
@@ -299,286 +302,372 @@ nav ul li a.active {
 }
 
 .dropdown-item {
-    padding: 12px 16px;
+    padding: 12px 20px;
     cursor: pointer;
-    transition: all 0.2s ease;
-    color: var(--text-dark);
+    transition: background-color 0.2s ease;
+    border-bottom: 1px solid #f0f0f0;
 }
 
 .dropdown-item:hover {
-    background-color: var(--accent-cream);
+    background-color: #f8f4f0;
     color: var(--primary-brown);
 }
 
-/* Calendar Styles */
+.dropdown-item:last-child {
+    border-bottom: none;
+}
+
+/* ===== ENHANCED DATE AND TIME PICKER ===== */
+.datetime-picker {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.date-input, .time-input {
+    position: relative;
+}
+
+.date-input input, .time-input input {
+    width: 100%;
+    padding: 15px 20px;
+    border: 2px solid #E0E0E0;
+    border-radius: 12px;
+    cursor: pointer;
+    background: white;
+    font-size: 1em;
+    transition: all 0.3s ease;
+}
+
+.date-input input:focus, .time-input input:focus {
+    outline: none;
+    border-color: var(--primary-brown);
+}
+
+.date-input i, .time-input i {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--primary-brown);
+}
+
+/* ===== ENHANCED CALENDAR POPUP ===== */
+.calendar-popup {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 1000;
+    background: white;
+    border: 2px solid var(--primary-brown);
+    border-radius: 15px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    margin-top: 10px;
+    min-width: 320px;
+}
+
 .calendar-container {
-    margin-top: 20px;
+    padding: 20px;
 }
 
 .calendar-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
 }
 
 .calendar-nav {
-    background: none;
+    background: var(--primary-brown);
+    color: white;
     border: none;
-    font-size: 20px;
+    border-radius: 8px;
+    padding: 8px 12px;
     cursor: pointer;
-    color: var(--primary-brown);
-    padding: 8px;
-    border-radius: 6px;
-    transition: all 0.3s ease;
+    transition: background-color 0.3s ease;
 }
 
 .calendar-nav:hover {
-    background-color: rgba(85, 44, 31, 0.1);
-    color: var(--accent-teal);
+    background: #6B3300;
 }
 
 .calendar-month {
     font-weight: 600;
-    font-size: 18px;
-    color: var(--text-dark);
+    color: #5D4037;
+    font-size: 1.1em;
 }
 
 .calendar-grid {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: 8px;
+    gap: 5px;
 }
 
 .calendar-weekday {
     text-align: center;
     font-weight: 600;
-    padding: 12px 5px;
     color: var(--primary-brown);
-    font-size: 14px;
-    background-color: rgba(85, 44, 31, 0.05);
-    border-radius: 6px;
+    padding: 10px 5px;
+    font-size: 0.9em;
 }
 
 .calendar-day {
-    text-align: center;
     padding: 12px 5px;
-    cursor: pointer;
+    text-align: center;
     border-radius: 8px;
-    transition: all 0.2s ease;
-    position: relative;
-    height: 45px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 500;
-}
-
-.calendar-day:hover {
-    background: rgba(85, 44, 31, 0.1);
-}
-
-.calendar-day.selected {
-    background: var(--primary-brown);
-    color: var(--text-white);
-    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
 }
 
 .calendar-day.available {
-    background: var(--available);
-    color: var(--text-dark);
-    border: 1px solid rgba(40, 167, 69, 0.3);
+    background-color: var(--available);
+    color: #2E7D32;
+    border-color: #4CAF50;
 }
 
-.calendar-day.limited {
-    background: var(--limited);
-    color: var(--text-dark);
-    border: 1px solid rgba(240, 173, 78, 0.3);
+.calendar-day.available:hover {
+    background-color: #4CAF50;
+    color: white;
+    transform: scale(1.05);
 }
 
-.calendar-day.booked {
-    background: var(--booked);
-    color: var(--text-light);
+.calendar-day.unavailable {
+    background-color: #F5F5F5;
+    color: #9E9E9E;
     cursor: not-allowed;
-    opacity: 0.7;
-    border: 1px solid rgba(220, 53, 69, 0.3);
+}
+
+.calendar-day.selected {
+    background-color: var(--primary-brown);
+    color: white;
+    border-color: #6B3300;
+    transform: scale(1.05);
 }
 
 .calendar-day.other-month {
-    color: #ccc;
-    cursor: default;
+    visibility: hidden;
 }
 
-/* Availability Info */
-.availability-info {
-    margin-top: 25px;
+/* ===== ENHANCED TIME PICKER ===== */
+.time-picker-popup {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    background: white;
+    border: 2px solid var(--primary-brown);
+    border-radius: 15px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    margin-top: 10px;
+    max-height: 300px; /* Limit maximum height */
+    overflow: hidden; /* Contain the scrolling */
+}
+
+.time-picker-container {
     padding: 20px;
-    background: var(--accent-cream);
-    border-radius: 12px;
-    border: 1px solid var(--light-brown);
+    max-height: 100%; /* Ensure it respects parent height */
 }
 
-.availability-title {
-    font-weight: 600;
+.time-picker-container h4 {
     margin-bottom: 15px;
-    color: var(--text-dark);
-    font-size: 16px;
+    color: #5D4037;
+    text-align: center;
 }
 
-.availability-status {
+.time-slots {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important; /* Change to 2 columns */
+    gap: 10px !important;
+    max-height: 200px !important; /* Set max height for scroll */
+    overflow-y: auto !important; /* Enable vertical scrolling */
+    padding-right: 5px; /* Space for scrollbar */
+    width: 100% !important; 
+}
+
+/* Custom scrollbar for better appearance */
+.time-slots::-webkit-scrollbar {
+    width: 6px;
+}
+
+.time-slots::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+.time-slots::-webkit-scrollbar-thumb {
+    background: var(--primary-brown);
+    border-radius: 3px;
+}
+
+.time-slots::-webkit-scrollbar-thumb:hover {
+    background: #6B3300;
+}
+
+.time-slot {
+    padding: 12px 8px;
+    border: 2px solid #E0E0E0;
+    border-radius: 8px;
+    text-align: center;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: all 0.3s ease;
+    background: white;
+    min-height: 50px; /* Consistent height */
     display: flex;
     align-items: center;
-    margin-bottom: 10px;
+    justify-content: center;
 }
 
-.status-color {
-    width: 20px;
-    height: 20px;
-    border-radius: 4px;
-    margin-right: 12px;
-    border: 1px solid;
+.time-slot:hover {
+    border-color: var(--primary-brown);
+    transform: translateY(-2px);
 }
 
-.status-available {
-    background-color: var(--available);
-    border-color: rgba(40, 167, 69, 0.5);
+.time-slot.selected {
+    background: var(--primary-brown);
+    color: white;
+    border-color: #6B3300;
+    transform: scale(1.05);
 }
 
-.status-limited {
-    background-color: var(--limited);
-    border-color: rgba(240, 173, 78, 0.5);
+.no-slots {
+    grid-column: 1 / -1;
+    text-align: center;
+    color: #9E9E9E;
+    font-style: italic;
+    padding: 20px;
 }
 
-.status-booked {
-    background-color: var(--booked);
-    border-color: rgba(220, 53, 69, 0.5);
-}
-
-/* Vendor Selection Layout */
-.vendor-selection-container {
-    display: grid;
-    grid-template-columns: 2fr 1fr;
-    gap: 30px;
-    margin-top: 30px;
-    align-items: start;
-}
-
-.calendar-column {
-    grid-column: 1;
-}
-
-.vendors-column {
-    grid-column: 2;
-}
-
-.vendor-selection {
-    position: sticky;
-    top: 100px;
-}
-
+/* ===== ENHANCED VENDOR CARDS ===== */
 .vendor-cards {
-    display: flex;
-    flex-direction: row;
-    gap: 15px;
-    max-height: 600px;
-    overflow-y: auto;
-    padding-right: 10px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    margin-top: 15px;
 }
 
 .vendor-card {
-    border: 2px solid var(--light-brown);
-    border-radius: 12px;
+    background: white;
+    border: 2px solid #E0E0E0;
+    border-radius: 15px;
     padding: 20px;
     cursor: pointer;
     transition: all 0.3s ease;
-    background: var(--accent-white);
-    width: 100%;
+    position: relative;
 }
 
 .vendor-card:hover {
     border-color: var(--primary-brown);
-    box-shadow: 0 8px 20px rgba(85, 44, 31, 0.15);
-    transform: translateY(-3px);
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(139, 69, 19, 0.15);
 }
 
 .vendor-card.selected {
-    border-color: var(--accent-teal);
-    background-color: rgba(42, 157, 143, 0.05);
-    box-shadow: 0 8px 20px rgba(42, 157, 143, 0.2);
+    border-color: var(--primary-brown);
+    background: #f8f4f0;
+    transform: translateY(-2px);
+}
+
+.vendor-card.selected::before {
+    content: '✓';
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: var(--primary-brown);
+    color: white;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
 }
 
 .vendor-name {
+    font-size: 1.3em;
     font-weight: 600;
-    margin-bottom: 10px;
-    color: var(--text-dark);
-    font-size: 18px;
+    color: #5D4037;
+    margin-bottom: 8px;
 }
 
 .vendor-rating {
     color: var(--accent-gold);
     margin-bottom: 10px;
-    font-size: 14px;
+    font-size: 0.9em;
 }
 
 .vendor-services {
     display: flex;
     flex-wrap: wrap;
-    gap: 6px;
-    margin-bottom: 12px;
+    gap: 5px;
+    margin-bottom: 10px;
 }
 
 .vendor-service-tag {
-    padding: 4px 10px;
-    background: var(--accent-cream);
+    background: #E0F2F1;
+    color: #00796B;
+    padding: 4px 8px;
     border-radius: 12px;
-    font-size: 12px;
-    color: var(--text-light);
-    border: 1px solid var(--light-brown);
+    font-size: 0.8em;
 }
 
 .vendor-price {
     font-weight: 600;
-    color: var(--accent-teal);
-    font-size: 16px;
+    color: var(--primary-brown);
+    margin-bottom: 8px;
 }
 
 .vendor-availability {
-    margin-top: 8px;
-    font-size: 14px;
-    color: var(--text-light);
+    font-size: 0.9em;
+    color: #4CAF50;
+    font-weight: 500;
 }
-/* Search Button */
+
+/* ===== ENHANCED SEARCH BUTTON ===== */
 .btn-search {
+    display: block;
     width: 100%;
-    padding: 16px;
-    background: linear-gradient(135deg, var(--accent-teal) 0%, #23867a 100%);
-    color: var(--text-white);
+    max-width: 300px;
+    margin: 30px auto 0;
+    background: linear-gradient(135deg, var(--primary-brown) 0%, #6B3300 100%);
+    color: white;
+    padding: 18px 30px;
     border: none;
-    border-radius: 8px;
-    font-size: 18px;
+    border-radius: 50px;
+    font-size: 1.1em;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
-    margin-top: 30px;
-    text-decoration: none;
-    display: block;
     text-align: center;
+    text-decoration: none;
+    box-shadow: 0 5px 15px rgba(139, 69, 19, 0.3);
 }
 
 .btn-search:hover {
-    background: linear-gradient(135deg, #23867a 0%, #1c6b5f 100%);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(42, 157, 143, 0.4);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(139, 69, 19, 0.4);
+    background: linear-gradient(135deg, #6B3300 0%, var(--primary-brown) 100%);
 }
 
-.btn-search:disabled {
-    background: #ccc;
-    cursor: not-allowed;
-    transform: none;
-    box-shadow: none;
+.btn-search:active {
+    transform: translateY(-1px);
 }
 
-/* Service Cards */
+/* ===== SELECTION SUMMARY ===== */
+.selection-summary {
+    text-align: center;
+    margin-top: 20px;
+    padding: 15px;
+    background: #E8F5E8;
+    border-radius: 10px;
+    color: #2E7D32;
+    font-weight: 500;
+}
+
+/* ===== SERVICE CARDS ===== */
 .services-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
@@ -670,7 +759,7 @@ nav ul li a.active {
     color: var(--accent-teal);
 }
 
-/* Buttons */
+/* ===== BUTTONS ===== */
 .btn {
     padding: 12px 24px;
     border-radius: 8px;
@@ -706,7 +795,7 @@ nav ul li a.active {
     transform: translateY(-2px);
 }
 
-/* Footer */
+/* ===== FOOTER ===== */
 footer {
     background: var(--dark-brown);
     color: var(--text-white);
@@ -776,124 +865,7 @@ footer {
     color: var(--light-brown);
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
-    .header-content {
-        flex-direction: column;
-        text-align: center;
-        gap: 20px;
-    }
-    
-    nav ul {
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 15px;
-    }
-    
-    .services-grid {
-        grid-template-columns: 1fr;
-    }
-    
-    .search-section {
-        padding: 25px;
-        margin: -40px auto 40px;
-    }
-    
-    .filters {
-        grid-template-columns: 1fr;
-    }
-    
-    .vendor-selection-container {
-        gap: 20px;
-    }
-    
-    .vendor-card {
-        padding: 15px;
-    }
-    
-    .vendor-name {
-        font-size: 16px;
-    }
-    
-    .calendar-grid {
-        gap: 5px;
-    }
-    
-    .calendar-day {
-        height: 40px;
-        padding: 10px 3px;
-        font-size: 14px;
-    }
-    
-    .page-title {
-        font-size: 32px;
-    }
-    
-    .section-title {
-        font-size: 28px;
-    }
-    
-    .logo-img {
-        width: 120px;
-        max-width: 120px;
-        margin: -30px 0;
-    }
-}
-
-/* Additional responsive adjustments for smaller screens */
-@media (max-width: 480px) {
-    .hero-content h1 {
-        font-size: 32px;
-    }
-    
-    .hero-content p {
-        font-size: 16px;
-    }
-    
-    .search-title {
-        font-size: 24px;
-    }
-    
-    .calendar-weekday {
-        font-size: 12px;
-        padding: 8px 3px;
-    }
-    
-    .calendar-day {
-        height: 35px;
-        font-size: 12px;
-    }
-    
-    .vendor-card {
-        padding: 15px;
-    }
-    
-    .vendor-name {
-        font-size: 16px;
-    }
-
-/* Responsive adjustments */
-@media (max-width: 1024px) {
-    .vendor-selection-container {
-        grid-template-columns: 1fr;
-        gap: 25px;
-    }
-    
-    .calendar-column,
-    .vendors-column {
-        grid-column: 1;
-    }
-    
-    .vendor-selection {
-        position: static;
-    }
-    
-    .vendor-cards {
-        max-height: none;
-        overflow-y: visible;
-    }
-}
-/* Auth Styles */
+/* ===== AUTH STYLES ===== */
 .auth-container {
     display: flex;
     justify-content: center;
@@ -961,4 +933,132 @@ footer {
     margin-top: 15px;
     font-weight: 600;
 }
+
+/* ===== RESPONSIVE DESIGN ===== */
+@media (max-width: 1024px) {
+    .vendor-selection-container {
+        grid-template-columns: 1fr;
+        gap: 25px;
+    }
+    
+    .calendar-column,
+    .vendors-column {
+        grid-column: 1;
+    }
+    
+    .vendor-selection {
+        position: static;
+    }
+    
+    .vendor-cards {
+        max-height: none;
+        overflow-y: visible;
+    }
+}
+
+@media (max-width: 768px) {
+    .header-content {
+        flex-direction: column;
+        text-align: center;
+        gap: 20px;
+    }
+    
+    nav ul {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 15px;
+    }
+    
+    .services-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .search-section {
+        padding: 25px;
+        margin: -40px auto 40px;
+    }
+    
+    .filters-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .datetime-picker {
+        grid-template-columns: 1fr;
+    }
+    
+    .vendor-cards {
+        grid-template-columns: 1fr;
+    }
+    
+    .time-slots {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .vendor-card {
+        padding: 15px;
+    }
+    
+    .vendor-name {
+        font-size: 16px;
+    }
+    
+    .calendar-grid {
+        gap: 5px;
+    }
+    
+    .calendar-day {
+        height: 40px;
+        padding: 10px 3px;
+        font-size: 14px;
+    }
+    
+    .page-title {
+        font-size: 32px;
+    }
+    
+    .section-title {
+        font-size: 28px;
+    }
+    
+    .logo-img {
+        width: 120px;
+        max-width: 120px;
+        margin: -30px 0;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-content h1 {
+        font-size: 32px;
+    }
+    
+    .hero-content p {
+        font-size: 16px;
+    }
+    
+    .search-title {
+        font-size: 24px;
+    }
+    
+    .calendar-weekday {
+        font-size: 12px;
+        padding: 8px 3px;
+    }
+    
+    .calendar-day {
+        height: 35px;
+        font-size: 12px;
+    }
+    
+    .vendor-card {
+        padding: 15px;
+    }
+    
+    .vendor-name {
+        font-size: 16px;
+    }
+    
+    .time-slots {
+        grid-template-columns: 1fr;
+    }
 }
