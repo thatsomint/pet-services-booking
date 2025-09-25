@@ -46,7 +46,7 @@ stages:
   jobs:
   - deployment: Deploy
     displayName: Deploy to Azure Web App
-    #environment: 'production'
+    environment: 'production'
     pool: 
       vmImage: 'ubuntu-latest'  # or 'windows-latest'
     
