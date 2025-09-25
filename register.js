@@ -23,6 +23,7 @@
   document.getElementById('registerForm').addEventListener('submit', async (e) => {
     e.preventDefault(); 
 
+    // inputs
     const fullName = document.getElementById('fullName').value;
     const email = document.getElementById('email').value;
     const phone = document.getElementById('phone').value;
@@ -37,53 +38,18 @@
     }
 
     try {
-        const response = await fetch(`${API_BASE_URL}/api/auth/register`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ 
-                email, 
-                password, 
-                full_name: fullName, 
-                phone_number: phone 
-            })
-        });
+      // Firebase - create user
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password)
+      const user = userCredential.user;
 
-        const data = await response.json();
+      messageDiv.style.color = 'green';
+      messageDiv.textContent = 'Registration successful! Redirecting to Login Page.';
 
-        if (response.ok) {
-            localStorage.setItem('token', data.access_token);
-            localStorage.setItem('user', JSON.stringify(data.user));
-            
-            messageDiv.style.color = 'green';
-            messageDiv.textContent = 'Registration successful! Redirecting...';
-            
-            setTimeout(() => {
-                window.location.href = 'index.html';
-            }, 1000);
-        } else {
-            messageDiv.style.color = 'red';
-            messageDiv.textContent = data.error || 'Registration failed';
-        }
+      setTimeout(() => {
+      window.location.href = 'login.html'; 
+      }, 1000);
     } catch (error) {
         messageDiv.style.color = 'red';
         messageDiv.textContent = 'Network error. Please try again.';
     }
-
-    // Firebase - create user
-    createUserWithEmailAndPassword(auth, email, password)
-    .then((userCredential) => {
-    // Signed up 
-    const user = userCredential.user;
-    alert("Your account has been created!");
-    // ...
-    })
-    .catch((error) => {
-    const errorCode = error.code;
-    const errorMessage = error.message;
-    alert(errorMessage);
-    // ..
-    });
-
-    });
+  });
