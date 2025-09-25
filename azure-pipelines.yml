@@ -24,7 +24,8 @@ stages:
   jobs:
   - job: Build
     displayName: Build
-    pool: Default  # CHANGED: Use your self-hosted agent
+    pool: 
+      vmImage: 'ubuntu-latest'  # or 'windows-latest'
     steps:
     - task: Docker@2
       displayName: Build and push an image to container registry
@@ -46,7 +47,8 @@ stages:
   - deployment: Deploy
     displayName: Deploy to Azure Web App
     environment: 'production'
-    pool: Default  # Use your self-hosted agent
+    pool: 
+      vmImage: 'ubuntu-latest'  # or 'windows-latest'
     
     strategy:
       runOnce:
