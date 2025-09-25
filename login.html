@@ -56,46 +56,7 @@
             ? 'http://localhost:5000' 
             : 'https://pawfectfind-backend.azurewebsites.net';
 
-/*        document.getElementById('loginForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            const messageDiv = document.getElementById('authMessage');
-
-            try {
-                const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ email, password })
-                });
-
-                const data = await response.json();
-
-                if (response.ok) {
-                    // Store token and user data
-                    localStorage.setItem('token', data.access_token);
-                    localStorage.setItem('user', JSON.stringify(data.user));
-                    
-                    messageDiv.style.color = 'green';
-                    messageDiv.textContent = 'Login successful! Redirecting...';
-                    
-                    // Redirect to home page after successful login
-                    setTimeout(() => {
-                        window.location.href = 'index.html';
-                    }, 1000);
-                } else {
-                    messageDiv.style.color = 'red';
-                    messageDiv.textContent = data.error || 'Login failed';
-                }
-            } catch (error) {
-                messageDiv.style.color = 'red';
-                messageDiv.textContent = 'Network error. Please try again.';
-            }
-        });
-
+/*    
         // Check if user is already logged in
         window.addEventListener('DOMContentLoaded', () => {
             const user = localStorage.getItem('user');
