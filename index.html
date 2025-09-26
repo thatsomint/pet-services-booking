@@ -175,6 +175,10 @@
 
     <!-- Enhanced React Booking System Component -->
     <script type="text/babel">
+           // Add this at the top of your React component
+    const API_BASE_URL = window.location.hostname.includes('azurewebsites.net') 
+        ? 'https://pawfectfind-backend.azurewebsites.net' 
+        : 'http://localhost:5000';
         const { useState, useEffect } = React;
 
         const PetServicesApp = () => {
@@ -195,55 +199,32 @@
             const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
 
             // Enhanced vendor data with proper availability
-            const vendors = [
-                {
-                    id: 'paws',
-                    name: 'Paws & Claws Grooming',
-                    rating: 4.9,
-                    services: ['Grooming', 'Breed Specialist'],
-                    price: 'From $45',
-                    availableSlots: {
-                        '2025-09-15': ['09:00 AM', '10:00 AM', '02:00 PM', '04:00 PM'],
-                        '2025-09-16': ['10:00 AM', '01:00 PM', '03:00 PM'],
-                        '2025-09-18': ['08:00 AM', '11:00 AM', '05:00 PM'],
-                        '2025-09-19': ['09:00 AM', '02:00 PM', '06:00 PM'],
-                        '2025-09-22': ['10:00 AM', '03:00 PM', '07:00 PM'],
-                        '2025-09-24': ['08:00 AM', '12:00 PM', '04:00 PM']
-                    }
-                },
-                {
-                    id: 'happy',
-                    name: 'Happy Tails Pet Hotel',
-                    rating: 4.7,
-                    services: ['Pet Hotel', 'Boarding', 'Day Care'],
-                    price: 'From $60/night',
-                    availableSlots: {
-                        '2025-09-15': ['10:00 AM', '02:00 PM'],
-                        '2025-09-16': ['09:00 AM', '01:00 PM', '05:00 PM'],
-                        '2025-09-17': ['11:00 AM', '03:00 PM'],
-                        '2025-09-21': ['08:00 AM', '12:00 PM', '04:00 PM'],
-                        '2025-09-22': ['10:00 AM', '02:00 PM', '06:00 PM'],
-                        '2025-09-25': ['09:00 AM', '01:00 PM', '05:00 PM']
-                    }
-                },
-                {
-                    id: 'bark',
-                    name: 'Bark Avenue Training',
-                    rating: 4.8,
-                    services: ['Obedience Training', 'Puppy Classes'],
-                    price: 'From $75/session',
-                    availableSlots: {
-                        '2025-09-16': ['09:00 AM', '11:00 AM', '03:00 PM'],
-                        '2025-09-18': ['10:00 AM', '02:00 PM', '04:00 PM'],
-                        '2025-09-20': ['08:00 AM', '01:00 PM', '05:00 PM'],
-                        '2025-09-23': ['09:00 AM', '12:00 PM', '06:00 PM']
-                    }
-                }
-            ];
+            // Replace the hardcoded vendors data with API call
+            const [vendors, setVendors] = useState([]);
+            const [loading, setLoading] = useState(false);
 
             const petTypes = ['Dogs', 'Cats', 'Rabbits', 'Hamsters', 'Guinea Pigs', 'Chinchillas', 'Ferrets', 'Birds', 'Turtles', 'Iguanas'];
             const locations = ['Central (District 1-2)', 'West (District 5-8, 22-23)', 'East (District 14-18)', 'North (District 19-21, 26-28)', 'South (District 3-4, 9-10)', 'North-East (District 11-13, 24-25)'];
             const services = ['Grooming', 'Sitter', 'Pet Hotel', 'Training'];
+
+            // Fetch vendors from backend
+useEffect(() => {
+    const fetchVendors = async () => {
+        setLoading(true);
+        try {
+            const response = await fetch(`${API_BASE_URL}/api/vendors`);
+            const data = await response.json();
+            setVendors(data);
+        } catch (error) {
+            console.error('Error fetching vendors:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+    fetchVendors();
+}, []);
+
+
 
             // Close dropdowns when clicking outside
             useEffect(() => {
@@ -310,10 +291,16 @@
             
             const formatDate = (day) => `${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
 
-            const getAvailableSlotsForDate = () => {
-                if (!selectedDate || !selectedVendor) return [];
-                const vendor = vendors.find(v => v.id === selectedVendor);
-                return vendor && vendor.availableSlots ? vendor.availableSlots[selectedDate] || [] : [];
+            // Update the availability check to use API
+            const getAvailableSlotsForDate = async (vendorId, date) => {
+                try {
+                    const response = await fetch(`${API_BASE_URL}/api/vendors/${vendorId}/availability/${date}`);
+                    const data = await response.json();
+                    return data.availableSlots || [];
+                 } catch (error) {
+                    console.error('Error fetching availability:', error);
+                    return [];
+                 }
             };
 
             const renderCalendar = () => {
@@ -538,15 +525,25 @@
                                 </div>
                             )}
 
-                            <a href="#" className="btn-search" onClick={(e) => {
+                            // Replace the alert in your React component
+                            <a href="#" className="btn-search" onClick={async (e) => {
                                 e.preventDefault();
                                 if (!selectedDate || !selectedTime || !selectedVendor) {
                                     alert('Please select date, time, and vendor first');
                                 } else {
-                                    alert(`Booking confirmed!\nDate: ${selectedDate}\nTime: ${selectedTime}\nVendor: ${vendors.find(v => v.id === selectedVendor).name}`);
+                                    const vendor = vendors.find(v => v.id === selectedVendor);
+                                    
+                                    // Store booking data for confirmation page
+                                    localStorage.setItem('bookingService', petService);
+                                    localStorage.setItem('bookingVendor', vendor.name);
+                                    localStorage.setItem('bookingDate', selectedDate);
+                                    localStorage.setItem('bookingTime', selectedTime);
+                                    localStorage.setItem('bookingPrice', vendor.price);
+                                    
+                                    // Redirect to confirmation page
+                                    window.location.href = `booking-confirmation.html?service=${petService}&vendor=${vendor.name}&date=${selectedDate}&time=${selectedTime}&price=${vendor.price}`;
                                 }
                             }}>
-                                <i className="fas fa-search"></i> Search Services
                             </a>
                             
                             {selectedDate && selectedTime && selectedVendor && (

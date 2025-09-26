@@ -1062,3 +1062,104 @@ footer {
         grid-template-columns: 1fr;
     }
 }
+
+/* Booking Confirmation Styles */
+.booking-confirmation {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+.confirmation-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.confirmation-header i {
+    font-size: 4rem;
+    color: #28a745;
+    margin-bottom: 20px;
+}
+
+.confirmation-header h1 {
+    color: #2c5530;
+    margin-bottom: 10px;
+}
+
+.booking-details, .user-profile-section, .payment-section {
+    background: #f8f9fa;
+    padding: 25px;
+    border-radius: 10px;
+    margin-bottom: 25px;
+    border-left: 4px solid #2c5530;
+}
+
+.detail-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.detail-item:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+.login-section {
+    background: #fff3cd;
+    border-left: 4px solid #ffc107;
+    padding: 25px;
+    border-radius: 10px;
+    margin-bottom: 25px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.message {
+    margin-top: 15px;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.message .success {
+    color: #155724;
+    background: #d4edda;
+}
+
+.message .error {
+    color: #721c24;
+    background: #f8d7da;
+}
+
+.pet-item {
+    padding: 10px;
+    background: white;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    border-left: 3px solid #2c5530;
+}
+
+.actions {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 30px;
+}
