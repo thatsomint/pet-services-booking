@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PawfectFind - User Dashboard</title>
+    <style>
+        /* Using your provided CSS variables and styling */
+        :root {
+            /* Base colors from your logo */
+            --primary-brown: #552c1f;    /* Your logo color - deep rich brown */
+            --dark-brown: #3a1e15;       /* Darker shade for contrast */
+            --light-brown: #8a5c4c;      /* Lighter complementary brown */
+            
+            /* Professional accent colors */
+            --accent-teal: #2a9d8f;      /* Professional teal - great contrast with brown */
+            --accent-cream: #f8f4e9;     /* Warm cream background */
+            --accent-white: #ffffff;     /* Pure white */
+            --accent-gold: #e9c46a;      /* Warm gold for highlights */
+            --accent-orange: #f4a261;    /* Soft orange for secondary actions */
+            
+            /* Text colors */
+            --text-dark: #2c1810;        /* Almost black brown */
+            --text-light: #6b4e37;       /* Medium brown for secondary text */
+            --text-white: #ffffff;       /* White text */
+            
+            /* Success color */
+            --success-green: #28A745;
+            
+            /* Shadows */
+            --shadow: 0 10px 30px rgba(85, 44, 31, 0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--accent-cream);
+            color: var(--text-dark);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header Styles */
+        header {
+            background: linear-gradient(135deg, var(--accent-cream) 0%, #f0e9db 100%);
+            color: var(--text-dark);
+            padding: 10px 0;
+            box-shadow: 0 4px 12px rgba(85, 44, 31, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 2px solid var(--light-brown);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            gap: 12px;
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--primary-brown);
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+        }
+
+        nav ul li a {
+            color: var(--primary-brown);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 8px 16px;
+            border-radius: 6px;
+        }
+
+        nav ul li a:hover,
+        nav ul li a.active {
+            background-color: rgba(85, 44, 31, 0.1);
+            color: var(--accent-teal);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .cart-icon, .user-icon {
+            position: relative;
+            color: var(--primary-brown);
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            padding: 8px;
+            text-decoration: none;
+        }
+
+        .cart-icon:hover, .user-icon:hover {
+            color: var(--accent-teal);
+        }
+
+        .cart-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: var(--accent-teal);
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Page Header */
+        .page-header {
+            background: linear-gradient(rgba(85, 44, 31, 0.9), rgba(58, 30, 21, 0.9)), 
+                        url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 300" fill="%23552c1f"><rect width="100%" height="100%"/></svg>') center/cover;
+            padding: 60px 0;
+            text-align: center;
+            color: var(--text-white);
+            margin-bottom: 40px;
+        }
+
+        .page-title {
+            font-size: 42px;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .breadcrumb {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        /* Dashboard Grid */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .dashboard-card {
+            background: var(--accent-white);
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            border: 1px solid #e8e1d7;
+            transition: all 0.3s ease;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 20px 40px rgba(85, 44, 31, 0.2);
+        }
+
+        .card-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--primary-brown);
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .card-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--accent-teal);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            color: white;
+        }
+
+        /* Calendar Styles */
+        .calendar {
+            width: 100%;
+        }
+
+        .calendar-header {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 2px;
+            margin-bottom: 2px;
+        }
+
+        .day-header {
+            background: var(--primary-brown);
+            color: white;
+            padding: 12px 8px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 14px;
+            border-radius: 6px 6px 0 0;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 2px;
+            background: var(--light-brown);
+            border-radius: 0 0 6px 6px;
+            overflow: hidden;
+        }
+
+        .calendar-cell {
+            background: white;
+            min-height: 100px;
+            padding: 8px;
+            position: relative;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            border: 1px solid #f0f0f0;
+        }
+
+        .calendar-cell:hover {
+            background: var(--accent-cream);
+        }
+
+        .calendar-cell.other-month {
+            background: #f8f8f8;
+            opacity: 0.5;
+        }
+
+        .date-number {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--primary-brown);
+            margin-bottom: 6px;
+        }
+
+        .other-month .date-number {
+            color: #ccc;
+        }
+
+        .appointment {
+            background: var(--accent-teal);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 500;
+            margin-bottom: 3px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .appointment:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        .appointment.grooming {
+            background: var(--accent-teal);
+        }
+
+        .appointment.vet {
+            background: var(--primary-brown);
+        }
+
+        .appointment.sitting {
+            background: var(--accent-gold);
+        }
+
+        .appointment.boarding {
+            background: var(--accent-orange);
+        }
+
+        /* Upcoming Appointments */
+        .appointments-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .appointment-item {
+            background: var(--accent-cream);
+            border-radius: 12px;
+            padding: 20px;
+            border-left: 4px solid var(--accent-teal);
+            transition: all 0.3s ease;
+        }
+
+        .appointment-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(85, 44, 31, 0.1);
+        }
+
+        .appointment-badge {
+            padding: 8px 16px;
+            border-radius: 20px;
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+            text-align: center;
+            margin-bottom: 10px;
+            display: inline-block;
+        }
+
+        .appointment-badge.grooming {
+            background: var(--accent-teal);
+        }
+
+        .appointment-badge.vet {
+            background: var(--primary-brown);
+        }
+
+        .appointment-badge.sitting {
+            background: var(--accent-gold);
+        }
+
+        .appointment-date {
+            font-size: 16px;
+            color: var(--text-light);
+            font-weight: 500;
+        }
+
+        /* Bottom Section */
+        .bottom-section {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .section-card {
+            background: var(--accent-white);
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            border: 1px solid #e8e1d7;
+        }
+
+        .booking-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background: var(--accent-cream);
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border-left: 3px solid var(--accent-teal);
+        }
+
+        .booking-service {
+            font-weight: 600;
+            color: var(--primary-brown);
+            margin-bottom: 5px;
+        }
+
+        .booking-time {
+            font-size: 14px;
+            color: var(--text-light);
+        }
+
+        .status-completed {
+            color: var(--success-green);
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .status-upcoming {
+            color: var(--accent-orange);
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        /* Quick Actions */
+        .action-btn {
+            width: 100%;
+            padding: 12px 20px;
+            background: linear-gradient(135deg, var(--primary-brown) 0%, var(--dark-brown) 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 12px;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(85, 44, 31, 0.4);
+        }
+
+        .action-btn.secondary {
+            background: linear-gradient(135deg, var(--accent-teal) 0%, #23867a 100%);
+        }
+
+        .action-btn.emergency {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            nav ul {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 15px;
+            }
+            
+            .dashboard-grid,
+            .bottom-section {
+                grid-template-columns: 1fr;
+            }
+            
+            .page-title {
+                font-size: 32px;
+            }
+            
+            .calendar-cell {
+                min-height: 80px;
+                padding: 4px;
+            }
+            
+            .appointment {
+                font-size: 10px;
+                padding: 2px 6px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .dashboard-card,
+            .section-card {
+                padding: 20px;
+            }
+            
+            .page-title {
+                font-size: 28px;
+            }
+            
+            .card-title {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <a href="#" class="logo">PawfectFind</a>
+                <nav>
+                    <ul>
+                        <li><a href="#" class="active">Home</a></li>
+                        <li><a href="#">Services</a></li>
+                        <li><a href="#">Providers</a></li>
+                        <li><a href="#">About</a></li>
+                        <li><a href="#">Contact</a></li>
+                    </ul>
+                </nav>
+                <div class="header-actions">
+                    <a href="#" class="cart-icon">
+                        🛒
+                        <span class="cart-badge">2</span>
+                    </a>
+                    <a href="#" class="user-icon">👤</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="page-header">
+        <div class="container">
+            <h1 class="page-title">Dashboard</h1>
+            <div class="breadcrumb">
+                <a href="#">Home</a> / Dashboard
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="dashboard-grid">
+            <div class="dashboard-card">
+                <h2 class="card-title">
+                    <span class="card-icon">📅</span>
+                    My Bookings
+                </h2>
+                <div class="calendar">
+                    <div class="calendar-header">
+                        <div class="day-header">Sun</div>
+                        <div class="day-header">Mon</div>
+                        <div class="day-header">Tue</div>
+                        <div class="day-header">Wed</div>
+                        <div class="day-header">Thu</div>
+                        <div class="day-header">Fri</div>
+                        <div class="day-header">Sat</div>
+                    </div>
+                    <div class="calendar-grid" id="calendar">
+                        <!-- Calendar will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="dashboard-card">
+                <h2 class="card-title">
+                    <span class="card-icon">🔔</span>
+                    Upcoming Appointments
+                </h2>
+                <div class="appointments-list">
+                    <div class="appointment-item">
+                        <div class="appointment-badge grooming">Dog Grooming</div>
+                        <div class="appointment-date">December 8, 2024</div>
+                    </div>
+                    <div class="appointment-item">
+                        <div class="appointment-badge vet">Vet Appointment</div>
+                        <div class="appointment-date">December 15, 2024</div>
+                    </div>
+                    <div class="appointment-item">
+                        <div class="appointment-badge sitting">Pet Sitting</div>
+                        <div class="appointment-date">December 20, 2024</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bottom-section">
+            <div class="section-card">
+                <h2 class="card-title">
+                    <span class="card-icon">📝</span>
+                    Recent Service History
+                </h2>
+                
+                <div class="booking-item">
+                    <div style="flex: 1;">
+                        <div class="booking-service">Premium Pet Grooming - Max</div>
+                        <div class="booking-time">Sep 25, 2024 • Professional grooming with full wash & dry service</div>
+                    </div>
+                    <div class="status-completed">✓ Completed</div>
+                </div>
+                
+                <div class="booking-item">
+                    <div style="flex: 1;">
+                        <div class="booking-service">Reliable Pet Sitting - Luna</div>
+                        <div class="booking-time">Sep 20, 2024 • Day care with overnight stay in your home</div>
+                    </div>
+                    <div class="status-completed">✓ Completed</div>
+                </div>
+                
+                <div class="booking-item">
+                    <div style="flex: 1;">
+                        <div class="booking-service">Premium Pet Hotel - Both Pets</div>
+                        <div class="booking-time">Sep 15, 2024 • 5-star boarding with climate-controlled suites</div>
+                    </div>
+                    <div class="status-completed">✓ Completed</div>
+                </div>
+
+                <div class="booking-item">
+                    <div style="flex: 1;">
+                        <div class="booking-service">Premium Pet Grooming - Max</div>
+                        <div class="booking-time">Dec 8, 2024 • Upcoming appointment with nail trimming</div>
+                    </div>
+                    <div class="status-upcoming">⏰ Upcoming</div>
+                </div>
+            </div>
+
+            <div class="section-card">
+                <h2 class="card-title">
+                    <span class="card-icon">⚡</span>
+                    Quick Actions
+                </h2>
+                
+                <button class="action-btn">Book Premium Grooming</button>
+                <button class="action-btn">Find Pet Sitters</button>
+                <button class="action-btn">Book Premium Hotel</button>
+                <button class="action-btn secondary">Update Pet Profile</button>
+                <button class="action-btn emergency">Emergency Vet Service</button>
+                
+                <div style="margin-top: 25px; padding-top: 25px; border-top: 1px solid #e8e1d7;">
+                    <h4 style="color: var(--primary-brown); margin-bottom: 15px; font-size: 16px;">Service Pricing</h4>
+                    <div style="font-size: 14px; color: var(--text-light); line-height: 1.8;">
+                        <div>Premium Grooming: <strong style="color: var(--accent-teal);">From $45</strong></div>
+                        <div>Pet Sitting: <strong style="color: var(--accent-teal);">From $30/day</strong></div>
+                        <div>Premium Hotels: <strong style="color: var(--accent-teal);">From $60/night</strong></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Calendar data with appointments
+        const appointments = {
+            8: [{ type: 'grooming', title: 'Dog Grooming', time: '10:00 AM' }],
+            15: [{ type: 'vet', title: 'Vet Appointment', time: '2:00 PM' }],
+            20: [{ type: 'sitting', title: 'Pet Sitting', time: '9:00 AM' }],
+            22: [
+                { type: 'grooming', title: 'Cat Grooming', time: '11:00 AM' },
+                { type: 'boarding', title: 'Pet Boarding', time: '3:00 PM' }
+            ],
+            28: [{ type: 'vet', title: 'Vaccination', time: '10:30 AM' }]
+        };
+
+        function generateCalendar() {
+            const calendar = document.getElementById('calendar');
+            const today = new Date();
+            const currentMonth = 11; // December (0-based)
+            const currentYear = 2024;
+            
+            // Get first day of month and number of days
+            const firstDay = new Date(currentYear, currentMonth, 1);
+            const lastDay = new Date(currentYear, currentMonth + 1, 0);
+            const daysInMonth = lastDay.getDate();
+            const startingDayOfWeek = firstDay.getDay();
+            
+            // Get previous month days to show
+            const prevMonth = new Date(currentYear, currentMonth, 0);
+            const daysInPrevMonth = prevMonth.getDate();
+            
+            let html = '';
+            let date = 1;
+            let nextMonthDate = 1;
+
+            // Generate 6 weeks (42 days)
+            for (let week = 0; week < 6; week++) {
+                for (let day = 0; day < 7; day++) {
+                    const cellIndex = week * 7 + day;
+                    let cellContent = '';
+                    let cellClass = 'calendar-cell';
+                    let dateNum = '';
+
+                    if (cellIndex < startingDayOfWeek) {
+                        // Previous month
+                        dateNum = daysInPrevMonth - startingDayOfWeek + cellIndex + 1;
+                        cellClass += ' other-month';
+                        cellContent = `<div class="date-number">${dateNum}</div>`;
+                    } else if (date <= daysInMonth) {
+                        // Current month
+                        dateNum = date;
+                        cellContent = `<div class="date-number">${date}</div>`;
+                        
+                        // Add appointments for this date
+                        if (appointments[date]) {
+                            appointments[date].forEach(apt => {
+                                cellContent += `<div class="appointment ${apt.type}" title="${apt.title} - ${apt.time}">${apt.title}</div>`;
+                            });
+                        }
+                        
+                        date++;
+                    } else {
+                        // Next month
+                        dateNum = nextMonthDate;
+                        cellClass += ' other-month';
+                        cellContent = `<div class="date-number">${nextMonthDate}</div>`;
+                        nextMonthDate++;
+                    }
+
+                    html += `<div class="${cellClass}">${cellContent}</div>`;
+                }
+            }
+
+            calendar.innerHTML = html;
+        }
+
+        // Add click handlers for appointments and buttons
+        function addEventListeners() {
+            document.querySelectorAll('.appointment').forEach(apt => {
+                apt.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    alert(`Appointment Details:\n${this.title}`);
+                });
+            });
+
+            document.querySelectorAll('.action-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const action = this.textContent;
+                    if (action.includes('Emergency')) {
+                        alert('Connecting you to emergency vet services...');
+                    } else {
+                        alert(`Opening ${action} booking form...`);
+                    }
+                });
+            });
+        }
+
+        // Initialize calendar
+        document.addEventListener('DOMContentLoaded', function() {
+            generateCalendar();
+            addEventListeners();
+        });
+    </script>
+</body>
+</html>
