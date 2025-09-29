@@ -223,12 +223,27 @@
             const services = ['Grooming', 'Sitter', 'Pet Hotel', 'Training'];
 
             // Fetch vendors from backend on component mount
+            // Update the fetchVendors function:
             useEffect(() => {
                 const fetchVendors = async () => {
                     setLoading(true);
+                    console.log('Attempting to fetch vendors from:', `${API_BASE_URL}/api/vendors`);
                     try {
-                        const response = await fetch(`${API_BASE_URL}/api/vendors`);
+                        const response = await fetch(`${API_BASE_URL}/api/vendors`, {
+                            method: 'GET',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Accept': 'application/json'
+                            },
+                            mode: 'cors'
+                        });
+                        
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+                        
                         const data = await response.json();
+                        console.log('Vendors data received:', data);
                         setVendors(data);
                     } catch (error) {
                         console.error('Error fetching vendors:', error);
