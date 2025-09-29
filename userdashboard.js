@@ -1,6 +1,8 @@
         let nav = 0;
         let clicked = null;
         let events = localStorage.getItem('events') ? JSON.parse(localStorage.getItem('events')) : [];
+        
+        const API_URL = 'http://localhost:3000/api'; // Change this to your deployed API URL
 
         const calendar = document.getElementById('calendar');
         const newEventModal = document.getElementById('newEventModal');
@@ -8,6 +10,19 @@
         const backDrop = document.getElementById('modalBackDrop');
         const eventTitleInput = document.getElementById('eventTitleInput');
         const weekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+        // Fetch events from database
+        async function fetchEvents() {
+            try {
+                const response = await fetch(`${API_URL}/events`);
+                if (!response.ok) throw new Error('Failed to fetch events');
+                events = await response.json();
+                load();
+            } catch (error) {
+                console.error('Error fetching events:', error);
+                alert('Failed to load events from database');
+            }
+        }
 
         // Pre-populate with some events for demonstration
         if (events.length === 0) {
@@ -156,4 +171,4 @@
         }
 
         initButtons();
-        load();
+        fetchEvents(); // Load events from database on initialization;
