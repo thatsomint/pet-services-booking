@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PawfectFind - User Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script type="module" src="userdashboard.js" defer></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-brown: #552c1f;
+            --light-brown: #f5f1ee;
+            --accent-teal: #2a9d8f;
+            --accent-gold: #e9c46a;
+            --accent-orange: #f4a261;
+            --accent-white: #ffffff;
+            --accent-cream: #f8f4f0;
+            --text-light: #666666;
+            --shadow: 0 4px 12px rgba(85, 44, 31, 0.1);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--light-brown);
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header Styles */
+        header {
+            background: var(--primary-brown);
+            color: white;
+            padding: 1rem 0;
+            box-shadow: var(--shadow);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: white;
+            text-decoration: none;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        nav a:hover, nav a.active {
+            color: var(--accent-gold);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .cart-icon, .user-icon {
+            color: white;
+            font-size: 1.2rem;
+            text-decoration: none;
+            position: relative;
+        }
+
+        .cart-badge {
+            background: var(--accent-teal);
+            color: white;
+            border-radius: 50%;
+            padding: 0.2rem 0.5rem;
+            font-size: 0.8rem;
+            position: absolute;
+            top: -8px;
+            right: -8px;
+        }
+
+        /* Page Header */
+        .page-header {
+            background: linear-gradient(135deg, var(--primary-brown) 0%, #6d3c2a 100%);
+            color: white;
+            padding: 2rem 0;
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .breadcrumb {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .breadcrumb a {
+            color: var(--accent-gold);
+            text-decoration: none;
+        }
+
+        /* Dashboard Grid */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .dashboard-card {
+            background: var(--accent-white);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            border: 1px solid #e8e1d7;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--primary-brown);    
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .card-icon {
+            width: 2rem;
+            height: 2rem;
+            background: var(--accent-teal);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            color: white;
+        }
+
+        /* Calendar Styles */
+        .calendar-container {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .calendar-header {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            background: var(--primary-brown);
+            color: white;
+        }
+
+        .day-header {
+            padding: 1rem;
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        #calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 1px;
+            background: #e0e0e0;
+        }
+
+        .day {
+            background: white;
+            min-height: 100px;
+            padding: 0.5rem;
+            position: relative;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .day:hover {
+            background: var(--accent-cream);
+        }
+
+        .day.padding {
+            background: #f8f8f8;
+            color: #ccc;
+        }
+
+        #currentDay {
+            background: #e7f3ff;
+            border: 2px solid #007bff;
+        }
+
+        .event {
+            background: var(--accent-teal);
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            margin-top: 0.25rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        /* Calendar Navigation */
+        .calendar-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background: var(--accent-cream);
+            border-radius: 12px;
+        }
+
+        .nav-btn {
+            background: var(--primary-brown);
+            color: white;
+            border: none;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            background: var(--accent-teal);
+            transform: translateY(-2px);
+        }
+
+        #monthDisplay {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--primary-brown);
+        }
+
+        /* Appointments List */
+        .appointments-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .appointment-item {
+            background: var(--accent-cream);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border-left: 4px solid var(--accent-teal);
+            transition: all 0.3s ease;
+        }
+
+        .appointment-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(85, 44, 31, 0.1);
+        }
+
+        .appointment-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            color: white;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-align: center;
+            margin-bottom: 0.5rem;
+            display: inline-block;
+        }
+
+        .appointment-badge.grooming { background: var(--accent-teal); }
+        .appointment-badge.vet { background: var(--primary-brown); }
+        .appointment-badge.sitting { background: var(--accent-gold); }
+
+        .appointment-date {
+            font-size: 1rem;
+            color: var(--text-light);
+            font-weight: 500;
+        }
+
+        /* Bottom Section */
+        .bottom-section {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+        }
+
+        .section-card {
+            background: var(--accent-white);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            border: 1px solid #e8e1d7;
+        }
+
+        .booking-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: var(--accent-cream);
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            border-left: 3px solid var(--accent-teal);
+        }
+
+        .booking-service {
+            font-weight: 600;
+            color: var(--primary-brown);
+            margin-bottom: 0.25rem;
+        }
+
+        .booking-time {
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
+        .status-completed {
+            color: #28a745;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .status-upcoming {
+            color: var(--accent-orange);
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        /* Quick Actions */
+        .action-btn {
+            width: 100%;
+            padding: 1rem 1.5rem;
+            background: linear-gradient(135deg, var(--primary-brown) 0%, var(--primary-brown) 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 0.75rem;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            text-align: left;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(85, 44, 31, 0.4);
+        }
+
+        .action-btn.secondary {
+            background: linear-gradient(135deg, var(--accent-teal) 0%, #23867a 100%);
+        }
+
+        .action-btn.emergency {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            z-index: 1000;
+            min-width: 300px;
+        }
+
+        #modalBackDrop {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 999;
+        }
+
+        .modal h2 {
+            margin-bottom: 1rem;
+            color: var(--primary-brown);
+        }
+
+        .modal input {
+            width: 100%;
+            padding: 0.75rem;
+            margin-bottom: 1rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+
+        .modal input.error {
+            border-color: #dc3545;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: flex-end;
+        }
+
+        .modal-btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .modal-btn.primary {
+            background: var(--accent-teal);
+            color: white;
+        }
+
+        .modal-btn.danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .modal-btn.secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .dashboard-grid,
+            .bottom-section {
+                grid-template-columns: 1fr;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            nav ul {
+                gap: 1rem;
+            }
+            
+            .day {
+                min-height: 80px;
+                padding: 0.25rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <a href="#" class="logo">PawfectFind</a>
+                <nav>
+                    <ul>
+                        <li><a href="#" class="active">Home</a></li>
+                        <li><a href="#">Services</a></li>
+                        <li><a href="#">Providers</a></li>
+                        <li><a href="#">About</a></li>
+                        <li><a href="#">Contact</a></li>
+                    </ul>
+                </nav>
+                <div class="header-actions">
+                    <a href="#" class="cart-icon">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span class="cart-badge">2</span>
+                    </a>
+                    <a href="#" class="user-icon">
+                        <i class="fas fa-user"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="page-header">
+        <div class="container">
+            <h1 class="page-title">Dashboard</h1>
+            <div class="breadcrumb">
+                <a href="#">Home</a> / Dashboard
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="dashboard-grid">
+            <!-- Calendar Section -->
+            <div class="dashboard-card">
+                <h2 class="card-title">
+                    <span class="card-icon"><i class="fas fa-calendar"></i></span>
+                    My Bookings
+                </h2>
+                
+                <div class="calendar-nav">
+                    <button id="backButton" class="nav-btn">
+                        <i class="fas fa-chevron-left"></i> Back
+                    </button>
+                    <div id="monthDisplay">December 2024</div>
+                    <button id="nextButton" class="nav-btn">
+                        Next <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+
+                <div class="calendar-container">
+                    <div class="calendar-header">
+                        <div class="day-header">Sun</div>
+                        <div class="day-header">Mon</div>
+                        <div class="day-header">Tue</div>
+                        <div class="day-header">Wed</div>
+                        <div class="day-header">Thu</div>
+                        <div class="day-header">Fri</div>
+                        <div class="day-header">Sat</div>
+                    </div>
+                    <div id="calendar" class="calendar-grid">
+                        <!-- Calendar will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Upcoming Appointments -->
+            <div class="dashboard-card">
+                <h2 class="card-title">
+                    <span class="card-icon"><i class="fas fa-bell"></i></span>
+                    Upcoming Appointments
+                </h2>
+                <div class="appointments-list">
+                    <div class="appointment-item">
+                        <div class="appointment-badge grooming">Dog Grooming</div>
+                        <div class="appointment-date">December 8, 2024</div>
+                    </div>
+                    <div class="appointment-item">
+                        <div class="appointment-badge vet">Vet Appointment</div>
+                        <div class="appointment-date">December 15, 2024</div>
+                    </div>
+                    <div class="appointment-item">
+                        <div class="appointment-badge sitting">Pet Sitting</div>
+                        <div class="appointment-date">December 20, 2024</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bottom-section">
+            <!-- Recent Service History -->
+            <div class="section-card">
+                <h2 class="card-title">
+                    <span class="card-icon"><i class="fas fa-history"></i></span>
+                    Recent Service History
+                </h2>
+                
+                <div class="booking-item">
+                    <div style="flex: 1;">
+                        <div class="booking-service">Premium Pet Grooming - Max</div>
+                        <div class="booking-time">Sep 25, 2024 • Professional grooming with full wash & dry service</div>
+                    </div>
+                    <div class="status-completed">✓ Completed</div>
+                </div>
+                
+                <div class="booking-item">
+                    <div style="flex: 1;">
+                        <div class="booking-service">Reliable Pet Sitting - Luna</div>
+                        <div class="booking-time">Sep 20, 2024 • Day care with overnight stay in your home</div>
+                    </div>
+                    <div class="status-completed">✓ Completed</div>
+                </div>
+                
+                <div class="booking-item">
+                    <div style="flex: 1;">
+                        <div class="booking-service">Premium Pet Hotel - Both Pets</div>
+                        <div class="booking-time">Sep 15, 2024 • 5-star boarding with climate-controlled suites</div>
+                    </div>
+                    <div class="status-completed">✓ Completed</div>
+                </div>
+
+                <div class="booking-item">
+                    <div style="flex: 1;">
+                        <div class="booking-service">Premium Pet Grooming - Max</div>
+                        <div class="booking-time">Dec 8, 2024 • Upcoming appointment with nail trimming</div>
+                    </div>
+                    <div class="status-upcoming">⏰ Upcoming</div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="section-card">
+                <h2 class="card-title">
+                    <span class="card-icon"><i class="fas fa-bolt"></i></span>
+                    Quick Actions
+                </h2>
+                
+                <button class="action-btn">
+                    <i class="fas fa-spa"></i> Book Premium Grooming
+                </button>
+                <button class="action-btn">
+                    <i class="fas fa-home"></i> Find Pet Sitters
+                </button>
+                <button class="action-btn">
+                    <i class="fas fa-hotel"></i> Book Premium Hotel
+                </button>
+                <button class="action-btn secondary">
+                    <i class="fas fa-paw"></i> Update Pet Profile
+                </button>
+                <button class="action-btn emergency">
+                    <i class="fas fa-ambulance"></i> Emergency Vet Service
+                </button>
+                
+                <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid #e8e1d7;">
+                    <h4 style="color: var(--primary-brown); margin-bottom: 1rem; font-size: 1rem;">Service Pricing</h4>
+                    <div style="font-size: 0.9rem; color: var(--text-light); line-height: 1.8;">
+                        <div>Premium Grooming: <strong style="color: var(--accent-teal);">From $45</strong></div>
+                        <div>Pet Sitting: <strong style="color: var(--accent-teal);">From $30/day</strong></div>
+                        <div>Premium Hotels: <strong style="color: var(--accent-teal);">From $60/night</strong></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+  
+    // Modals
+    <div id="modalBackDrop"></div>
+
+    <div id="newEventModal" class="modal">
+        <h2>New Appointment</h2>
+        <input id="eventTitleInput" placeholder="Appointment Title">
+        <div class="modal-buttons">
+            <button id="cancelButton" class="modal-btn secondary">Cancel</button>
+            <button id="saveButton" class="modal-btn primary">Save</button>
+        </div>
+    </div>
+
+    <div id="deleteEventModal" class="modal">
+        <h2>Appointment</h2>
+        <p id="eventText"></p>
+        <div class="modal-buttons">
+            <button id="deleteButton" class="modal-btn danger">Delete</button>
+            <button id="closeButton" class="modal-btn secondary">Close</button>
+        </div>
+    </div>
+
+
+
+</body>
+</html>
