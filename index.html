@@ -175,56 +175,69 @@
 
     <!-- Enhanced React Booking System Component -->
     <script type="text/babel">
-           // Add this at the top of your React component
-    const API_BASE_URL = window.location.hostname.includes('azurewebsites.net') 
-        ? 'https://pawfectfind-backend.azurewebsites.net' 
-        : 'http://localhost:5000';
+        const API_BASE_URL = window.location.hostname.includes('azurewebsites.net') 
+            ? 'https://pawfectfind-backend.azurewebsites.net' 
+            : 'http://localhost:5000';
+        
         const { useState, useEffect } = React;
 
         const PetServicesApp = () => {
+            // Step 1: Basic Information
             const [petType, setPetType] = useState('');
             const [location, setLocation] = useState('');
             const [petService, setPetService] = useState('');
+            
+            // Step 2: Date & Time
             const [selectedDate, setSelectedDate] = useState('');
             const [selectedTime, setSelectedTime] = useState('');
+            
+            // Step 3: Vendor Selection
             const [selectedVendor, setSelectedVendor] = useState(null);
+            const [vendors, setVendors] = useState([]);
+            const [filteredVendors, setFilteredVendors] = useState([]);
+            const [loading, setLoading] = useState(false);
+            const [searchCompleted, setSearchCompleted] = useState(false);
+            
+            // UI States
             const [showPetDropdown, setShowPetDropdown] = useState(false);
             const [showLocationDropdown, setShowLocationDropdown] = useState(false);
             const [showServiceDropdown, setShowServiceDropdown] = useState(false);
             const [showCalendar, setShowCalendar] = useState(false);
             const [showTimePicker, setShowTimePicker] = useState(false);
+            // Update the step tracking logic
+            const [currentStep, setCurrentStep] = useState(1); // 1: Basic, 2: DateTime, 3: Results
             
+            // Add this function to determine step completion
+            const getStepStatus = (stepNumber) => {
+                if (stepNumber < currentStep) return 'completed';
+                if (stepNumber === currentStep) return 'active';
+                return '';
+            };
+
             // Calendar state
             const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
             const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
-
-            // Enhanced vendor data with proper availability
-            // Replace the hardcoded vendors data with API call
-            const [vendors, setVendors] = useState([]);
-            const [loading, setLoading] = useState(false);
 
             const petTypes = ['Dogs', 'Cats', 'Rabbits', 'Hamsters', 'Guinea Pigs', 'Chinchillas', 'Ferrets', 'Birds', 'Turtles', 'Iguanas'];
             const locations = ['Central (District 1-2)', 'West (District 5-8, 22-23)', 'East (District 14-18)', 'North (District 19-21, 26-28)', 'South (District 3-4, 9-10)', 'North-East (District 11-13, 24-25)'];
             const services = ['Grooming', 'Sitter', 'Pet Hotel', 'Training'];
 
-            // Fetch vendors from backend
-useEffect(() => {
-    const fetchVendors = async () => {
-        setLoading(true);
-        try {
-            const response = await fetch(`${API_BASE_URL}/api/vendors`);
-            const data = await response.json();
-            setVendors(data);
-        } catch (error) {
-            console.error('Error fetching vendors:', error);
-        } finally {
-            setLoading(false);
-        }
-    };
-    fetchVendors();
-}, []);
-
-
+            // Fetch vendors from backend on component mount
+            useEffect(() => {
+                const fetchVendors = async () => {
+                    setLoading(true);
+                    try {
+                        const response = await fetch(`${API_BASE_URL}/api/vendors`);
+                        const data = await response.json();
+                        setVendors(data);
+                    } catch (error) {
+                        console.error('Error fetching vendors:', error);
+                    } finally {
+                        setLoading(false);
+                    }
+                };
+                fetchVendors();
+            }, []);
 
             // Close dropdowns when clicking outside
             useEffect(() => {
@@ -291,16 +304,89 @@ useEffect(() => {
             
             const formatDate = (day) => `${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
 
-            // Update the availability check to use API
-            const getAvailableSlotsForDate = async (vendorId, date) => {
+            // Search for vendors based on criteria - ONLY SHOW AVAILABLE ONES
+            const searchVendors = async () => {
+                if (!petType || !location || !petService || !selectedDate || !selectedTime) {
+                    alert('Please complete all fields before searching');
+                    return;
+                }
+
+                setLoading(true);
+                setSearchCompleted(false);
+                
                 try {
-                    const response = await fetch(`${API_BASE_URL}/api/vendors/${vendorId}/availability/${date}`);
-                    const data = await response.json();
-                    return data.availableSlots || [];
-                 } catch (error) {
-                    console.error('Error fetching availability:', error);
-                    return [];
-                 }
+                    // Filter vendors based on service type
+                    const matchedVendors = vendors.filter(vendor => 
+                        vendor.services.some(service => 
+                            service.toLowerCase().includes(petService.toLowerCase())
+                        )
+                    );
+                    
+                    // Check availability for each vendor and ONLY KEEP AVAILABLE ONES
+                    const vendorsWithAvailability = await Promise.all(
+                        matchedVendors.map(async (vendor) => {
+                            try {
+                                const response = await fetch(`${API_BASE_URL}/api/vendors/${vendor.id}/availability/${selectedDate}`);
+                                const data = await response.json();
+                                
+                                // Check if the selected time is available
+                                const isTimeAvailable = data.availableSlots && data.availableSlots.includes(selectedTime);
+                                
+                                return {
+                                    ...vendor,
+                                    isAvailable: isTimeAvailable,
+                                    availableSlots: data.availableSlots || []
+                                };
+                            } catch (error) {
+                                console.error(`Error checking availability for ${vendor.name}:`, error);
+                                return {
+                                    ...vendor,
+                                    isAvailable: false,
+                                    availableSlots: []
+                                };
+                            }
+                        })
+                    );
+                    
+                    // FILTER OUT UNAVAILABLE VENDORS - Only show available ones!
+                    const availableVendors = vendorsWithAvailability.filter(vendor => vendor.isAvailable);
+                    
+                    setFilteredVendors(availableVendors);
+                    setSearchCompleted(true);
+                    setCurrentStep(3); // Move to results step
+                    
+                    // Show message if no vendors available
+                    if (availableVendors.length === 0) {
+                        alert('No vendors available for your selected date and time. Please try different options.');
+                    }
+                    
+                } catch (error) {
+                    console.error('Error searching vendors:', error);
+                    alert('Error searching for vendors. Please try again.');
+                } finally {
+                    setLoading(false);
+                }
+            };
+
+            const resetSearch = () => {
+                setSearchCompleted(false);
+                setFilteredVendors([]);
+                setSelectedVendor(null);
+                setCurrentStep(1);
+            };
+
+            const proceedToBooking = (vendor) => {
+                // Since we only show available vendors, no need to check availability again
+                // Store booking data for confirmation page
+                localStorage.setItem('bookingService', petService);
+                localStorage.setItem('bookingVendor', vendor.name);
+                localStorage.setItem('bookingVendorId', vendor.id);
+                localStorage.setItem('bookingDate', selectedDate);
+                localStorage.setItem('bookingTime', selectedTime);
+                localStorage.setItem('bookingPrice', vendor.price);
+                
+                // Redirect to confirmation page
+                window.location.href = `booking-confirmation.html?service=${petService}&vendor=${vendor.name}&date=${selectedDate}&time=${selectedTime}&price=${vendor.price}`;
             };
 
             const renderCalendar = () => {
@@ -310,21 +396,21 @@ useEffect(() => {
                 
                 let days = [];
                 
+                // Add empty days for the first week
                 for (let i = 0; i < firstDay; i++) {
                     days.push(<div key={`empty-${i}`} className="calendar-day other-month"></div>);
                 }
                 
+                // Add days of the month
                 for (let day = 1; day <= daysInMonth; day++) {
                     const dateStr = formatDate(day);
-                    const vendor = selectedVendor ? vendors.find(v => v.id === selectedVendor) : null;
-                    const hasSlots = vendor && vendor.availableSlots && vendor.availableSlots[dateStr] && vendor.availableSlots[dateStr].length > 0;
                     const isSelected = selectedDate === dateStr;
                     
                     days.push(
                         <div 
                             key={day} 
-                            className={`calendar-day ${hasSlots ? 'available' : 'unavailable'} ${isSelected ? 'selected' : ''}`}
-                            onClick={() => hasSlots && handleDateSelect(day)}
+                            className={`calendar-day available ${isSelected ? 'selected' : ''}`}
+                            onClick={() => handleDateSelect(day)}
                         >
                             {day}
                         </div>
@@ -335,13 +421,13 @@ useEffect(() => {
                     <div className="calendar-popup">
                         <div className="calendar-container">
                             <div className="calendar-header">
-                                <button className="calendar-nav" onClick={() => navigateMonth('prev')}>
+                                <button className="calendar-nav prev" onClick={() => navigateMonth('prev')}>
                                     <i className="fas fa-chevron-left"></i>
                                 </button>
                                 <div className="calendar-month">
                                     {monthNames[currentMonth]} {currentYear}
                                 </div>
-                                <button className="calendar-nav" onClick={() => navigateMonth('next')}>
+                                <button className="calendar-nav next" onClick={() => navigateMonth('next')}>
                                     <i className="fas fa-chevron-right"></i>
                                 </button>
                             </div>
@@ -362,35 +448,27 @@ useEffect(() => {
             };
 
             const renderTimePicker = () => {
-                const availableSlots = getAvailableSlotsForDate();
+                const timeSlots = ['09:00 AM', '10:00 AM', '11:00 AM', '02:00 PM', '03:00 PM', '04:00 PM', '05:00 PM'];
                 
                 return (
                     <div className="time-picker-popup">
                         <div className="time-picker-container">
                             <h4>Select Time Slot</h4>
                             <div className="time-slots">
-                                {availableSlots.length > 0 ? (
-                                    availableSlots.map((time, index) => (
-                                        <div 
-                                            key={index} 
-                                            className={`time-slot ${selectedTime === time ? 'selected' : ''}`}
-                                            onClick={() => handleTimeSelect(time)}
-                                        >
-                                            {time}
-                                        </div>
-                                    ))
-                                ) : (
-                                    <div className="no-slots">No available slots for this date</div>
-                                )}
+                                {timeSlots.map((time, index) => (
+                                    <div 
+                                        key={index} 
+                                        className={`time-slot ${selectedTime === time ? 'selected' : ''}`}
+                                        onClick={() => handleTimeSelect(time)}
+                                    >
+                                        {time}
+                                    </div>
+                                ))}
                             </div>
                         </div>
                     </div>
                 );
             };
-
-            const filteredVendors = petService 
-                ? vendors.filter(vendor => vendor.services.some(s => s.toLowerCase().includes(petService.toLowerCase())))
-                : vendors;
 
             return (
                 <div>
@@ -404,151 +482,209 @@ useEffect(() => {
                     <div className="container">
                         <div className="search-section">
                             <h2 className="search-title">Find the perfect service for your pet</h2>
-                            <div className="filters-grid">
-                                <div className="filter-group">
-                                    <label>Pet Type</label>
-                                    <div className="dropdown">
-                                        <div className="dropdown-select" onClick={(e) => { e.stopPropagation(); toggleDropdown('pet'); }}>
-                                            <span>{petType || 'Select pet type'}</span>
-                                            <i className={`fas fa-chevron-${showPetDropdown ? 'up' : 'down'}`}></i>
-                                        </div>
-                                        {showPetDropdown && (
-                                            <div className="dropdown-list show">
-                                                {petTypes.map((pet, index) => (
-                                                    <div key={index} className="dropdown-item" onClick={() => { setPetType(pet); setShowPetDropdown(false); }}>
-                                                        {pet}
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        )}
-                                    </div>
+                            
+                            {/* Progress Steps */}
+                            <div className="progress-steps">
+                                <div className={`step ${getStepStatus(1)}`}>
+                                    <div className="step-number">1</div>
+                                    <div className="step-label">Basic Info</div>
                                 </div>
-
-                                <div className="filter-group">
-                                    <label>Location</label>
-                                    <div className="dropdown">
-                                        <div className="dropdown-select" onClick={(e) => { e.stopPropagation(); toggleDropdown('location'); }}>
-                                            <span>{location || 'Select location'}</span>
-                                            <i className={`fas fa-chevron-${showLocationDropdown ? 'up' : 'down'}`}></i>
-                                        </div>
-                                        {showLocationDropdown && (
-                                            <div className="dropdown-list show">
-                                                {locations.map((loc, index) => (
-                                                    <div key={index} className="dropdown-item" onClick={() => { setLocation(loc); setShowLocationDropdown(false); }}>
-                                                        {loc}
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        )}
-                                    </div>
+                                <div className={`step ${getStepStatus(2)}`}>
+                                    <div className="step-number">2</div>
+                                    <div className="step-label">Date & Time</div>
                                 </div>
-
-                                <div className="filter-group">
-                                    <label>Pet Service</label>
-                                    <div className="dropdown">
-                                        <div className="dropdown-select" onClick={(e) => { e.stopPropagation(); toggleDropdown('service'); }}>
-                                            <span>{petService || 'Select service'}</span>
-                                            <i className={`fas fa-chevron-${showServiceDropdown ? 'up' : 'down'}`}></i>
-                                        </div>
-                                        {showServiceDropdown && (
-                                            <div className="dropdown-list show">
-                                                {services.map((service, index) => (
-                                                    <div key={index} className="dropdown-item" onClick={() => { setPetService(service); setShowServiceDropdown(false); }}>
-                                                        {service}
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
-
-                                <div className="filter-group">
-                                    <label>Date & Time</label>
-                                    <div className="datetime-picker">
-                                        <div className="date-input">
-                                            <input 
-                                                type="text" 
-                                                placeholder="Select date" 
-                                                value={selectedDate ? new Date(selectedDate).toLocaleDateString() : ''}
-                                                readOnly 
-                                                onClick={(e) => { e.stopPropagation(); toggleCalendar(); }}
-                                            />
-                                            <i className="fas fa-calendar"></i>
-                                            {showCalendar && renderCalendar()}
-                                        </div>
-                                        
-                                        <div className="time-input">
-                                            <input 
-                                                type="text" 
-                                                placeholder="Select time" 
-                                                value={selectedTime}
-                                                readOnly 
-                                                onClick={(e) => { e.stopPropagation(); toggleTimePicker(); }}
-                                            />
-                                            <i className="fas fa-clock"></i>
-                                            {showTimePicker && renderTimePicker()}
-                                        </div>
-                                    </div>
+                                <div className={`step ${getStepStatus(3)}`}>
+                                    <div className="step-number">3</div>
+                                    <div className="step-label">Choose Vendor</div>
                                 </div>
                             </div>
 
-                            {petService && (
-                                <div className="filter-group">
-                                    <label>Select Vendor</label>
-                                    <div className="vendor-cards">
-                                        {filteredVendors.map(vendor => (
-                                            <div 
-                                                key={vendor.id} 
-                                                className={`vendor-card ${selectedVendor === vendor.id ? 'selected' : ''}`}
-                                                onClick={() => setSelectedVendor(vendor.id)}
-                                            >
-                                                <div className="vendor-name">{vendor.name}</div>
-                                                <div className="vendor-rating">
-                                                    {'★'.repeat(Math.floor(vendor.rating))}
-                                                    {'☆'.repeat(5 - Math.floor(vendor.rating))}
-                                                    ({vendor.rating})
-                                                </div>
-                                                <div className="vendor-services">
-                                                    {vendor.services.map(service => (
-                                                        <span key={service} className="vendor-service-tag">{service}</span>
+                            {/* Step 1: Basic Information */}
+                            {(currentStep === 1 || !searchCompleted) && (
+                                <div className="filters-grid">
+                                    <div className="filter-group">
+                                        <label>Pet Type *</label>
+                                        <div className="dropdown">
+                                            <div className="dropdown-select" onClick={(e) => { e.stopPropagation(); toggleDropdown('pet'); }}>
+                                                <span>{petType || 'Select pet type'}</span>
+                                                <i className={`fas fa-chevron-${showPetDropdown ? 'up' : 'down'}`}></i>
+                                            </div>
+                                            {showPetDropdown && (
+                                                <div className="dropdown-list show">
+                                                    {petTypes.map((pet, index) => (
+                                                        <div key={index} className="dropdown-item" onClick={() => { setPetType(pet); setShowPetDropdown(false); }}>
+                                                            {pet}
+                                                        </div>
                                                     ))}
                                                 </div>
-                                                <div className="vendor-price">{vendor.price}</div>
-                                                {selectedDate && vendor.availableSlots[selectedDate] && (
-                                                    <div className="vendor-availability">
-                                                        {vendor.availableSlots[selectedDate].length} slots available
-                                                    </div>
-                                                )}
+                                            )}
+                                        </div>
+                                    </div>
+
+                                    <div className="filter-group">
+                                        <label>Location *</label>
+                                        <div className="dropdown">
+                                            <div className="dropdown-select" onClick={(e) => { e.stopPropagation(); toggleDropdown('location'); }}>
+                                                <span>{location || 'Select location'}</span>
+                                                <i className={`fas fa-chevron-${showLocationDropdown ? 'up' : 'down'}`}></i>
                                             </div>
-                                        ))}
+                                            {showLocationDropdown && (
+                                                <div className="dropdown-list show">
+                                                    {locations.map((loc, index) => (
+                                                        <div key={index} className="dropdown-item" onClick={() => { setLocation(loc); setShowLocationDropdown(false); }}>
+                                                            {loc}
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+
+                                    <div className="filter-group">
+                                        <label>Pet Service *</label>
+                                        <div className="dropdown">
+                                            <div className="dropdown-select" onClick={(e) => { e.stopPropagation(); toggleDropdown('service'); }}>
+                                                <span>{petService || 'Select service'}</span>
+                                                <i className={`fas fa-chevron-${showServiceDropdown ? 'up' : 'down'}`}></i>
+                                            </div>
+                                            {showServiceDropdown && (
+                                                <div className="dropdown-list show">
+                                                    {services.map((service, index) => (
+                                                        <div key={index} className="dropdown-item" onClick={() => { setPetService(service); setShowServiceDropdown(false); }}>
+                                                            {service}
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+
+                                    <div className="filter-group">
+                                        <button 
+                                            className="btn btn-primary btn-next"
+                                            onClick={() => {
+                                                if (petType && location && petService) {
+                                                    setCurrentStep(2);
+                                                } else {
+                                                    alert('Please select pet type, location, and service first');
+                                                }
+                                            }}
+                                        >
+                                            Next: Date & Time <i className="fas fa-arrow-right"></i>
+                                        </button>
                                     </div>
                                 </div>
-                            )};
+                            )}
 
-                            
-                            <a href="#" className="btn-search" onClick={async (e) => {
-                                e.preventDefault();
-                                if (!selectedDate || !selectedTime || !selectedVendor) {
-                                    alert('Please select date, time, and vendor first');
-                                } else {
-                                    const vendor = vendors.find(v => v.id === selectedVendor);
-                                    
-                                    // Store booking data for confirmation page
-                                    localStorage.setItem('bookingService', petService);
-                                    localStorage.setItem('bookingVendor', vendor.name);
-                                    localStorage.setItem('bookingDate', selectedDate);
-                                    localStorage.setItem('bookingTime', selectedTime);
-                                    localStorage.setItem('bookingPrice', vendor.price);
-                                    
-                                    // Redirect to confirmation page
-                                    window.location.href = `booking-confirmation.html?service=${petService}&vendor=${vendor.name}&date=${selectedDate}&time=${selectedTime}&price=${vendor.price}`;
-                                }
-                            }}>
-                            </a>
-                            
-                            {selectedDate && selectedTime && selectedVendor && (
-                                <div className="selection-summary">
-                                    Selected: {new Date(selectedDate).toLocaleDateString()} at {selectedTime} with {vendors.find(v => v.id === selectedVendor).name}
+                            {/* Step 2: Date & Time Selection */}
+                            {currentStep === 2 && (
+                                <div className="datetime-section">
+                                    <h3>Select Date & Time</h3>
+                                    <div className="filters-grid">
+                                        <div className="filter-group full-width">
+                                            <label>Preferred Date *</label>
+                                            <div className="datetime-picker">
+                                                <div className="date-input">
+                                                    <input 
+                                                        type="text" 
+                                                        placeholder="Select date" 
+                                                        value={selectedDate ? new Date(selectedDate).toLocaleDateString() : ''}
+                                                        readOnly 
+                                                        onClick={(e) => { e.stopPropagation(); toggleCalendar(); }}
+                                                    />
+                                                    <i className="fas fa-calendar"></i>
+                                                    {showCalendar && renderCalendar()}
+                                                </div>
+                                                
+                                                <div className="time-input">
+                                                    <input 
+                                                        type="text" 
+                                                        placeholder="Select time" 
+                                                        value={selectedTime}
+                                                        readOnly 
+                                                        onClick={(e) => { e.stopPropagation(); toggleTimePicker(); }}
+                                                    />
+                                                    <i className="fas fa-clock"></i>
+                                                    {showTimePicker && renderTimePicker()}
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div className="filter-group full-width">
+                                            <div className="action-buttons">
+                                                <button 
+                                                    className="btn btn-secondary"
+                                                    onClick={() => setCurrentStep(1)}
+                                                >
+                                                    <i className="fas fa-arrow-left"></i> Back
+                                                </button>
+                                                <button 
+                                                    className="btn btn-primary"
+                                                    onClick={searchVendors}
+                                                    disabled={loading}
+                                                >
+                                                    {loading ? 'Searching...' : 'Search Services'}
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Step 3: Vendor Results */}
+                            {currentStep === 3 && searchCompleted && (
+                                <div className="vendor-results">
+                                    <div className="results-header">
+                                        <h3>Available Vendors</h3>
+                                        <p>Found {filteredVendors.length} available vendors for {petService} in {location}</p>
+                                        <button className="btn btn-outline" onClick={resetSearch}>
+                                            <i className="fas fa-refresh"></i> New Search
+                                        </button>
+                                    </div>
+
+                                    {loading ? (
+                                        <div className="loading">Searching for available vendors...</div>
+                                    ) : filteredVendors.length === 0 ? (
+                                        <div className="no-results">
+                                            <p>No vendors available for your selected date and time. Please try different options.</p>
+                                            <button className="btn btn-primary" onClick={resetSearch}>
+                                                Try Different Options
+                                            </button>
+                                        </div>
+                                    ) : (
+                                        <div className="vendor-cards">
+                                            {filteredVendors.map(vendor => (
+                                                <div 
+                                                    key={vendor.id} 
+                                                    className="vendor-card available-vendor"
+                                                >
+                                                    <div className="vendor-header">
+                                                        <div className="vendor-name">{vendor.name}</div>
+                                                        <div className="vendor-rating">
+                                                            {'★'.repeat(Math.floor(vendor.rating))}
+                                                            {'☆'.repeat(5 - Math.floor(vendor.rating))}
+                                                            ({vendor.rating})
+                                                        </div>
+                                                    </div>
+                                                    <div className="vendor-services">
+                                                        {vendor.services.map(service => (
+                                                            <span key={service} className="vendor-service-tag">{service}</span>
+                                                        ))}
+                                                    </div>
+                                                    <div className="vendor-price">{vendor.price}</div>
+                                                    <div className="vendor-availability available">
+                                                        ✅ Available on {selectedDate} at {selectedTime}
+                                                    </div>
+                                                    <button 
+                                                        className="btn btn-primary"
+                                                        onClick={() => proceedToBooking(vendor)}
+                                                    >
+                                                        Book Now
+                                                    </button>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
                                 </div>
                             )}
                         </div>
