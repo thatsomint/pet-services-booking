@@ -4,45 +4,32 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PawfectFind - User Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script type="module" src="userdashboard.js" defer></script>
     <style>
-        /* Using your provided CSS variables and styling */
-        :root {
-            /* Base colors from your logo */
-            --primary-brown: #552c1f;    /* Your logo color - deep rich brown */
-            --dark-brown: #3a1e15;       /* Darker shade for contrast */
-            --light-brown: #8a5c4c;      /* Lighter complementary brown */
-            
-            /* Professional accent colors */
-            --accent-teal: #2a9d8f;      /* Professional teal - great contrast with brown */
-            --accent-cream: #f8f4e9;     /* Warm cream background */
-            --accent-white: #ffffff;     /* Pure white */
-            --accent-gold: #e9c46a;      /* Warm gold for highlights */
-            --accent-orange: #f4a261;    /* Soft orange for secondary actions */
-            
-            /* Text colors */
-            --text-dark: #2c1810;        /* Almost black brown */
-            --text-light: #6b4e37;       /* Medium brown for secondary text */
-            --text-white: #ffffff;       /* White text */
-            
-            /* Success color */
-            --success-green: #28A745;
-            
-            /* Shadows */
-            --shadow: 0 10px 30px rgba(85, 44, 31, 0.15);
-        }
-
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary-brown: #552c1f;
+            --light-brown: #f5f1ee;
+            --accent-teal: #2a9d8f;
+            --accent-gold: #e9c46a;
+            --accent-orange: #f4a261;
+            --accent-white: #ffffff;
+            --accent-cream: #f8f4f0;
+            --text-light: #666666;
+            --shadow: 0 4px 12px rgba(85, 44, 31, 0.1);
         }
 
         body {
-            background-color: var(--accent-cream);
-            color: var(--text-dark);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--light-brown);
+            color: #333;
             line-height: 1.6;
-            min-height: 100vh;
         }
 
         .container {
@@ -53,262 +40,234 @@
 
         /* Header Styles */
         header {
-            background: linear-gradient(135deg, var(--accent-cream) 0%, #f0e9db 100%);
-            color: var(--text-dark);
-            padding: 10px 0;
-            box-shadow: 0 4px 12px rgba(85, 44, 31, 0.1);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            border-bottom: 2px solid var(--light-brown);
+            background: var(--primary-brown);
+            color: white;
+            padding: 1rem 0;
+            box-shadow: var(--shadow);
         }
 
         .header-content {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            gap: 18px;
         }
 
         .logo {
-            display: flex;
-            align-items: center;
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: white;
             text-decoration: none;
-            gap: 12px;
-            font-size: 28px;
-            font-weight: 700;
-            color: var(--primary-brown);
         }
 
         nav ul {
             display: flex;
             list-style: none;
-            gap: 30px;
+            gap: 2rem;
         }
 
-        nav ul li a {
-            color: var(--primary-brown);
+        nav a {
+            color: white;
             text-decoration: none;
             font-weight: 500;
-            transition: all 0.3s ease;
-            padding: 8px 16px;
-            border-radius: 6px;
+            transition: color 0.3s ease;
         }
 
-        nav ul li a:hover,
-        nav ul li a.active {
-            background-color: rgba(85, 44, 31, 0.1);
-            color: var(--accent-teal);
+        nav a:hover, nav a.active {
+            color: var(--accent-gold);
         }
 
         .header-actions {
             display: flex;
+            gap: 1rem;
             align-items: center;
-            gap: 15px;
         }
 
         .cart-icon, .user-icon {
-            position: relative;
-            color: var(--primary-brown);
-            font-size: 20px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            padding: 8px;
+            color: white;
+            font-size: 1.2rem;
             text-decoration: none;
-        }
-
-        .cart-icon:hover, .user-icon:hover {
-            color: var(--accent-teal);
+            position: relative;
         }
 
         .cart-badge {
-            position: absolute;
-            top: -5px;
-            right: -5px;
             background: var(--accent-teal);
             color: white;
             border-radius: 50%;
-            width: 18px;
-            height: 18px;
-            font-size: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            padding: 0.2rem 0.5rem;
+            font-size: 0.8rem;
+            position: absolute;
+            top: -8px;
+            right: -8px;
         }
 
         /* Page Header */
         .page-header {
-            background: linear-gradient(rgba(85, 44, 31, 0.9), rgba(58, 30, 21, 0.9)), 
-                        url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 300" fill="%23552c1f"><rect width="100%" height="100%"/></svg>') center/cover;
-            padding: 60px 0;
-            text-align: center;
-            color: var(--text-white);
-            margin-bottom: 40px;
+            background: linear-gradient(135deg, var(--primary-brown) 0%, #6d3c2a 100%);
+            color: white;
+            padding: 2rem 0;
+            margin-bottom: 2rem;
         }
 
         .page-title {
-            font-size: 42px;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
         }
 
         .breadcrumb {
-            font-size: 16px;
+            font-size: 0.9rem;
             opacity: 0.9;
+        }
+
+        .breadcrumb a {
+            color: var(--accent-gold);
+            text-decoration: none;
         }
 
         /* Dashboard Grid */
         .dashboard-grid {
             display: grid;
             grid-template-columns: 2fr 1fr;
-            gap: 30px;
-            margin-bottom: 40px;
+            gap: 2rem;
+            margin-bottom: 2rem;
         }
 
         .dashboard-card {
             background: var(--accent-white);
             border-radius: 16px;
-            padding: 30px;
+            padding: 2rem;
             box-shadow: var(--shadow);
             border: 1px solid #e8e1d7;
-            transition: all 0.3s ease;
-        }
-
-        .dashboard-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 20px 40px rgba(85, 44, 31, 0.2);
         }
 
         .card-title {
-            font-size: 24px;
+            font-size: 1.5rem;
             font-weight: 600;
             color: var(--primary-brown);
-            margin-bottom: 25px;
+            margin-bottom: 1.5rem;
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 0.75rem;
         }
 
         .card-icon {
-            width: 32px;
-            height: 32px;
+            width: 2rem;
+            height: 2rem;
             background: var(--accent-teal);
             border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 16px;
+            font-size: 1rem;
             color: white;
         }
 
         /* Calendar Styles */
-        .calendar {
-            width: 100%;
+        .calendar-container {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
         }
 
         .calendar-header {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
-            gap: 2px;
-            margin-bottom: 2px;
+            background: var(--primary-brown);
+            color: white;
         }
 
         .day-header {
-            background: var(--primary-brown);
-            color: white;
-            padding: 12px 8px;
+            padding: 1rem;
             text-align: center;
             font-weight: 600;
-            font-size: 14px;
-            border-radius: 6px 6px 0 0;
+            font-size: 0.9rem;
         }
 
-        .calendar-grid {
+        #calendar {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
-            gap: 2px;
-            background: var(--light-brown);
-            border-radius: 0 0 6px 6px;
-            overflow: hidden;
+            gap: 1px;
+            background: #e0e0e0;
         }
 
-        .calendar-cell {
+        .day {
             background: white;
             min-height: 100px;
-            padding: 8px;
+            padding: 0.5rem;
             position: relative;
             cursor: pointer;
             transition: background-color 0.2s ease;
-            border: 1px solid #f0f0f0;
         }
 
-        .calendar-cell:hover {
+        .day:hover {
             background: var(--accent-cream);
         }
 
-        .calendar-cell.other-month {
+        .day.padding {
             background: #f8f8f8;
-            opacity: 0.5;
-        }
-
-        .date-number {
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--primary-brown);
-            margin-bottom: 6px;
-        }
-
-        .other-month .date-number {
             color: #ccc;
         }
 
-        .appointment {
+        #currentDay {
+            background: #e7f3ff;
+            border: 2px solid #007bff;
+        }
+
+        .event {
             background: var(--accent-teal);
             color: white;
-            padding: 4px 8px;
+            padding: 0.25rem 0.5rem;
             border-radius: 4px;
-            font-size: 11px;
-            font-weight: 500;
-            margin-bottom: 3px;
-            cursor: pointer;
-            transition: all 0.2s ease;
+            font-size: 0.8rem;
+            margin-top: 0.25rem;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
         }
 
-        .appointment:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+        /* Calendar Navigation */
+        .calendar-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background: var(--accent-cream);
+            border-radius: 12px;
         }
 
-        .appointment.grooming {
-            background: var(--accent-teal);
-        }
-
-        .appointment.vet {
+        .nav-btn {
             background: var(--primary-brown);
+            color: white;
+            border: none;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
         }
 
-        .appointment.sitting {
-            background: var(--accent-gold);
+        .nav-btn:hover {
+            background: var(--accent-teal);
+            transform: translateY(-2px);
         }
 
-        .appointment.boarding {
-            background: var(--accent-orange);
+        #monthDisplay {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--primary-brown);
         }
 
-        /* Upcoming Appointments */
+        /* Appointments List */
         .appointments-list {
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 1rem;
         }
 
         .appointment-item {
             background: var(--accent-cream);
             border-radius: 12px;
-            padding: 20px;
+            padding: 1.5rem;
             border-left: 4px solid var(--accent-teal);
             transition: all 0.3s ease;
         }
@@ -319,30 +278,22 @@
         }
 
         .appointment-badge {
-            padding: 8px 16px;
+            padding: 0.5rem 1rem;
             border-radius: 20px;
             color: white;
             font-weight: 600;
-            font-size: 14px;
+            font-size: 0.9rem;
             text-align: center;
-            margin-bottom: 10px;
+            margin-bottom: 0.5rem;
             display: inline-block;
         }
 
-        .appointment-badge.grooming {
-            background: var(--accent-teal);
-        }
-
-        .appointment-badge.vet {
-            background: var(--primary-brown);
-        }
-
-        .appointment-badge.sitting {
-            background: var(--accent-gold);
-        }
+        .appointment-badge.grooming { background: var(--accent-teal); }
+        .appointment-badge.vet { background: var(--primary-brown); }
+        .appointment-badge.sitting { background: var(--accent-gold); }
 
         .appointment-date {
-            font-size: 16px;
+            font-size: 1rem;
             color: var(--text-light);
             font-weight: 500;
         }
@@ -351,14 +302,13 @@
         .bottom-section {
             display: grid;
             grid-template-columns: 2fr 1fr;
-            gap: 30px;
-            margin-top: 30px;
+            gap: 2rem;
         }
 
         .section-card {
             background: var(--accent-white);
             border-radius: 16px;
-            padding: 30px;
+            padding: 2rem;
             box-shadow: var(--shadow);
             border: 1px solid #e8e1d7;
         }
@@ -366,50 +316,51 @@
         .booking-item {
             display: flex;
             align-items: center;
-            gap: 15px;
-            padding: 15px;
+            gap: 1rem;
+            padding: 1rem;
             background: var(--accent-cream);
             border-radius: 8px;
-            margin-bottom: 15px;
+            margin-bottom: 1rem;
             border-left: 3px solid var(--accent-teal);
         }
 
         .booking-service {
             font-weight: 600;
             color: var(--primary-brown);
-            margin-bottom: 5px;
+            margin-bottom: 0.25rem;
         }
 
         .booking-time {
-            font-size: 14px;
+            font-size: 0.9rem;
             color: var(--text-light);
         }
 
         .status-completed {
-            color: var(--success-green);
+            color: #28a745;
             font-weight: 600;
-            font-size: 14px;
+            font-size: 0.9rem;
         }
 
         .status-upcoming {
             color: var(--accent-orange);
             font-weight: 600;
-            font-size: 14px;
+            font-size: 0.9rem;
         }
 
         /* Quick Actions */
         .action-btn {
             width: 100%;
-            padding: 12px 20px;
-            background: linear-gradient(135deg, var(--primary-brown) 0%, var(--dark-brown) 100%);
+            padding: 1rem 1.5rem;
+            background: linear-gradient(135deg, var(--primary-brown) 0%, var(--primary-brown) 100%);
             color: white;
             border: none;
             border-radius: 8px;
             font-weight: 600;
             cursor: pointer;
-            margin-bottom: 12px;
+            margin-bottom: 0.75rem;
             transition: all 0.3s ease;
-            font-size: 14px;
+            font-size: 0.9rem;
+            text-align: left;
         }
 
         .action-btn:hover {
@@ -425,51 +376,98 @@
             background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
         }
 
-        /* Responsive Design */
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            z-index: 1000;
+            min-width: 300px;
+        }
+
+        #modalBackDrop {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 999;
+        }
+
+        .modal h2 {
+            margin-bottom: 1rem;
+            color: var(--primary-brown);
+        }
+
+        .modal input {
+            width: 100%;
+            padding: 0.75rem;
+            margin-bottom: 1rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+
+        .modal input.error {
+            border-color: #dc3545;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: flex-end;
+        }
+
+        .modal-btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .modal-btn.primary {
+            background: var(--accent-teal);
+            color: white;
+        }
+
+        .modal-btn.danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .modal-btn.secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        /* Responsive */
         @media (max-width: 768px) {
-            .header-content {
-                flex-direction: column;
-                gap: 20px;
-            }
-            
-            nav ul {
-                flex-wrap: wrap;
-                justify-content: center;
-                gap: 15px;
-            }
-            
             .dashboard-grid,
             .bottom-section {
                 grid-template-columns: 1fr;
             }
             
-            .page-title {
-                font-size: 32px;
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
             }
             
-            .calendar-cell {
+            nav ul {
+                gap: 1rem;
+            }
+            
+            .day {
                 min-height: 80px;
-                padding: 4px;
-            }
-            
-            .appointment {
-                font-size: 10px;
-                padding: 2px 6px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .dashboard-card,
-            .section-card {
-                padding: 20px;
-            }
-            
-            .page-title {
-                font-size: 28px;
-            }
-            
-            .card-title {
-                font-size: 20px;
+                padding: 0.25rem;
             }
         }
     </style>
@@ -490,10 +488,12 @@
                 </nav>
                 <div class="header-actions">
                     <a href="#" class="cart-icon">
-                        🛒
+                        <i class="fas fa-shopping-cart"></i>
                         <span class="cart-badge">2</span>
                     </a>
-                    <a href="#" class="user-icon">👤</a>
+                    <a href="#" class="user-icon">
+                        <i class="fas fa-user"></i>
+                    </a>
                 </div>
             </div>
         </div>
@@ -510,12 +510,24 @@
 
     <div class="container">
         <div class="dashboard-grid">
+            <!-- Calendar Section -->
             <div class="dashboard-card">
                 <h2 class="card-title">
-                    <span class="card-icon">📅</span>
+                    <span class="card-icon"><i class="fas fa-calendar"></i></span>
                     My Bookings
                 </h2>
-                <div class="calendar">
+                
+                <div class="calendar-nav">
+                    <button id="backButton" class="nav-btn">
+                        <i class="fas fa-chevron-left"></i> Back
+                    </button>
+                    <div id="monthDisplay">December 2024</div>
+                    <button id="nextButton" class="nav-btn">
+                        Next <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+
+                <div class="calendar-container">
                     <div class="calendar-header">
                         <div class="day-header">Sun</div>
                         <div class="day-header">Mon</div>
@@ -525,15 +537,16 @@
                         <div class="day-header">Fri</div>
                         <div class="day-header">Sat</div>
                     </div>
-                    <div class="calendar-grid" id="calendar">
+                    <div id="calendar" class="calendar-grid">
                         <!-- Calendar will be populated by JavaScript -->
                     </div>
                 </div>
             </div>
 
+            <!-- Upcoming Appointments -->
             <div class="dashboard-card">
                 <h2 class="card-title">
-                    <span class="card-icon">🔔</span>
+                    <span class="card-icon"><i class="fas fa-bell"></i></span>
                     Upcoming Appointments
                 </h2>
                 <div class="appointments-list">
@@ -554,9 +567,10 @@
         </div>
 
         <div class="bottom-section">
+            <!-- Recent Service History -->
             <div class="section-card">
                 <h2 class="card-title">
-                    <span class="card-icon">📝</span>
+                    <span class="card-icon"><i class="fas fa-history"></i></span>
                     Recent Service History
                 </h2>
                 
@@ -593,21 +607,32 @@
                 </div>
             </div>
 
+            <!-- Quick Actions -->
             <div class="section-card">
                 <h2 class="card-title">
-                    <span class="card-icon">⚡</span>
+                    <span class="card-icon"><i class="fas fa-bolt"></i></span>
                     Quick Actions
                 </h2>
                 
-                <button class="action-btn">Book Premium Grooming</button>
-                <button class="action-btn">Find Pet Sitters</button>
-                <button class="action-btn">Book Premium Hotel</button>
-                <button class="action-btn secondary">Update Pet Profile</button>
-                <button class="action-btn emergency">Emergency Vet Service</button>
+                <button class="action-btn">
+                    <i class="fas fa-spa"></i> Book Premium Grooming
+                </button>
+                <button class="action-btn">
+                    <i class="fas fa-home"></i> Find Pet Sitters
+                </button>
+                <button class="action-btn">
+                    <i class="fas fa-hotel"></i> Book Premium Hotel
+                </button>
+                <button class="action-btn secondary">
+                    <i class="fas fa-paw"></i> Update Pet Profile
+                </button>
+                <button class="action-btn emergency">
+                    <i class="fas fa-ambulance"></i> Emergency Vet Service
+                </button>
                 
-                <div style="margin-top: 25px; padding-top: 25px; border-top: 1px solid #e8e1d7;">
-                    <h4 style="color: var(--primary-brown); margin-bottom: 15px; font-size: 16px;">Service Pricing</h4>
-                    <div style="font-size: 14px; color: var(--text-light); line-height: 1.8;">
+                <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid #e8e1d7;">
+                    <h4 style="color: var(--primary-brown); margin-bottom: 1rem; font-size: 1rem;">Service Pricing</h4>
+                    <div style="font-size: 0.9rem; color: var(--text-light); line-height: 1.8;">
                         <div>Premium Grooming: <strong style="color: var(--accent-teal);">From $45</strong></div>
                         <div>Pet Sitting: <strong style="color: var(--accent-teal);">From $30/day</strong></div>
                         <div>Premium Hotels: <strong style="color: var(--accent-teal);">From $60/night</strong></div>
@@ -617,106 +642,25 @@
         </div>
     </div>
 
-    <script>
-        // Calendar data with appointments
-        const appointments = {
-            8: [{ type: 'grooming', title: 'Dog Grooming', time: '10:00 AM' }],
-            15: [{ type: 'vet', title: 'Vet Appointment', time: '2:00 PM' }],
-            20: [{ type: 'sitting', title: 'Pet Sitting', time: '9:00 AM' }],
-            22: [
-                { type: 'grooming', title: 'Cat Grooming', time: '11:00 AM' },
-                { type: 'boarding', title: 'Pet Boarding', time: '3:00 PM' }
-            ],
-            28: [{ type: 'vet', title: 'Vaccination', time: '10:30 AM' }]
-        };
+    <!-- Modals -->
+    <div id="modalBackDrop"></div>
 
-        function generateCalendar() {
-            const calendar = document.getElementById('calendar');
-            const today = new Date();
-            const currentMonth = 11; // December (0-based)
-            const currentYear = 2024;
-            
-            // Get first day of month and number of days
-            const firstDay = new Date(currentYear, currentMonth, 1);
-            const lastDay = new Date(currentYear, currentMonth + 1, 0);
-            const daysInMonth = lastDay.getDate();
-            const startingDayOfWeek = firstDay.getDay();
-            
-            // Get previous month days to show
-            const prevMonth = new Date(currentYear, currentMonth, 0);
-            const daysInPrevMonth = prevMonth.getDate();
-            
-            let html = '';
-            let date = 1;
-            let nextMonthDate = 1;
+    <div id="newEventModal" class="modal">
+        <h2>New Appointment</h2>
+        <input id="eventTitleInput" placeholder="Appointment Title">
+        <div class="modal-buttons">
+            <button id="cancelButton" class="modal-btn secondary">Cancel</button>
+            <button id="saveButton" class="modal-btn primary">Save</button>
+        </div>
+    </div>
 
-            // Generate 6 weeks (42 days)
-            for (let week = 0; week < 6; week++) {
-                for (let day = 0; day < 7; day++) {
-                    const cellIndex = week * 7 + day;
-                    let cellContent = '';
-                    let cellClass = 'calendar-cell';
-                    let dateNum = '';
-
-                    if (cellIndex < startingDayOfWeek) {
-                        // Previous month
-                        dateNum = daysInPrevMonth - startingDayOfWeek + cellIndex + 1;
-                        cellClass += ' other-month';
-                        cellContent = `<div class="date-number">${dateNum}</div>`;
-                    } else if (date <= daysInMonth) {
-                        // Current month
-                        dateNum = date;
-                        cellContent = `<div class="date-number">${date}</div>`;
-                        
-                        // Add appointments for this date
-                        if (appointments[date]) {
-                            appointments[date].forEach(apt => {
-                                cellContent += `<div class="appointment ${apt.type}" title="${apt.title} - ${apt.time}">${apt.title}</div>`;
-                            });
-                        }
-                        
-                        date++;
-                    } else {
-                        // Next month
-                        dateNum = nextMonthDate;
-                        cellClass += ' other-month';
-                        cellContent = `<div class="date-number">${nextMonthDate}</div>`;
-                        nextMonthDate++;
-                    }
-
-                    html += `<div class="${cellClass}">${cellContent}</div>`;
-                }
-            }
-
-            calendar.innerHTML = html;
-        }
-
-        // Add click handlers for appointments and buttons
-        function addEventListeners() {
-            document.querySelectorAll('.appointment').forEach(apt => {
-                apt.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    alert(`Appointment Details:\n${this.title}`);
-                });
-            });
-
-            document.querySelectorAll('.action-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const action = this.textContent;
-                    if (action.includes('Emergency')) {
-                        alert('Connecting you to emergency vet services...');
-                    } else {
-                        alert(`Opening ${action} booking form...`);
-                    }
-                });
-            });
-        }
-
-        // Initialize calendar
-        document.addEventListener('DOMContentLoaded', function() {
-            generateCalendar();
-            addEventListeners();
-        });
-    </script>
+    <div id="deleteEventModal" class="modal">
+        <h2>Appointment</h2>
+        <p id="eventText"></p>
+        <div class="modal-buttons">
+            <button id="deleteButton" class="modal-btn danger">Delete</button>
+            <button id="closeButton" class="modal-btn secondary">Close</button>
+        </div>
+    </div>
 </body>
 </html>
