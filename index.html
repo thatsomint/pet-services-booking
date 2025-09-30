@@ -181,6 +181,65 @@
         
         const { useState, useEffect } = React;
 
+const MOCK_VENDORS = [
+    {
+        id: "paws",
+        name: "Happy Paws Grooming",
+        rating: 4.8,
+        services: ["Grooming", "Bath", "Nail Trimming"],
+        price: "From $45",
+        location: "Central Singapore",  // ← Added missing comma here
+        availableSlots: {
+            "2025-09-29": ["09:00 AM", "10:00 AM", "02:00 PM", "03:00 PM"],
+            "2025-09-30": ["09:00 AM", "11:00 AM", "02:00 PM"],
+            "2025-10-01": ["10:00 AM", "02:00 PM", "03:00 PM"]
+        },
+        isAvailable: true
+    },
+    {
+        id: "happy",
+        name: "Happy Tails Pet Hotel",
+        rating: 4.9,
+        services: ["Pet Hotel", "Daycare", "Grooming"],
+        price: "From $60/night",
+        location: "East Singapore",
+        availableSlots: {
+            "2025-09-29": ["09:00 AM", "11:00 AM", "02:00 PM"],
+            "2025-09-30": ["10:00 AM", "02:00 PM", "04:00 PM"],
+            "2025-10-01": ["09:00 AM", "11:00 AM", "03:00 PM"]
+        },
+        isAvailable: true
+    },
+    {
+        id: "paradise",
+        name: "Professional Pet Sitters",
+        rating: 4.7,
+        services: ["Sitter", "Walking", "Feeding"],
+        price: "From $30/visit",
+        location: "Nationwide",
+        availableSlots: {
+            "2025-09-29": ["10:00 AM", "02:00 PM", "05:00 PM"],
+            "2025-09-30": ["09:00 AM", "03:00 PM", "05:00 PM"],
+            "2025-10-01": ["10:00 AM", "02:00 PM", "04:00 PM"]
+        },
+        isAvailable: true
+    },
+    {
+        id: "elite",
+        name: "Elite Pet Training",
+        rating: 4.6,
+        services: ["Training", "Behavior Modification"],
+        price: "From $80/session",
+        location: "Central Singapore",
+        availableSlots: {
+            "2025-09-29": ["09:00 AM", "11:00 AM", "03:00 PM"],
+            "2025-09-30": ["10:00 AM", "02:00 PM", "04:00 PM"],
+            "2025-10-01": ["09:00 AM", "11:00 AM", "03:00 PM"]
+        },
+        isAvailable: true
+    }
+];
+
         const PetServicesApp = () => {
             // Step 1: Basic Information
             const [petType, setPetType] = useState('');
@@ -223,12 +282,11 @@
             const services = ['Grooming', 'Sitter', 'Pet Hotel', 'Training'];
 
             // Fetch vendors from backend on component mount
-            // Update the fetchVendors function:
             useEffect(() => {
                 const fetchVendors = async () => {
                     setLoading(true);
-                    console.log('Attempting to fetch vendors from:', `${API_BASE_URL}/api/vendors`);
                     try {
+                        console.log('Attempting to fetch vendors from API...');
                         const response = await fetch(`${API_BASE_URL}/api/vendors`, {
                             method: 'GET',
                             headers: {
@@ -243,10 +301,14 @@
                         }
                         
                         const data = await response.json();
-                        console.log('Vendors data received:', data);
+                        console.log('Successfully fetched vendors from API');
+                        console.log('API Response:', data);
+                        console.log('First vendor availability field:', data[0]?.availableSlots ? 'availableSlots' : 'availability');
                         setVendors(data);
                     } catch (error) {
-                        console.error('Error fetching vendors:', error);
+                        console.log('API fetch failed, using mock data instead');
+                        console.error('Error details:', error);
+                        setVendors(MOCK_VENDORS);
                     } finally {
                         setLoading(false);
                     }
@@ -319,69 +381,48 @@
             
             const formatDate = (day) => `${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
 
-            // Search for vendors based on criteria - ONLY SHOW AVAILABLE ONES
-            const searchVendors = async () => {
-                if (!petType || !location || !petService || !selectedDate || !selectedTime) {
-                    alert('Please complete all fields before searching');
-                    return;
-                }
-
-                setLoading(true);
-                setSearchCompleted(false);
-                
-                try {
-                    // Filter vendors based on service type
-                    const matchedVendors = vendors.filter(vendor => 
-                        vendor.services.some(service => 
-                            service.toLowerCase().includes(petService.toLowerCase())
-                        )
-                    );
-                    
-                    // Check availability for each vendor and ONLY KEEP AVAILABLE ONES
-                    const vendorsWithAvailability = await Promise.all(
-                        matchedVendors.map(async (vendor) => {
-                            try {
-                                const response = await fetch(`${API_BASE_URL}/api/vendors/${vendor.id}/availability/${selectedDate}`);
-                                const data = await response.json();
-                                
-                                // Check if the selected time is available
-                                const isTimeAvailable = data.availableSlots && data.availableSlots.includes(selectedTime);
-                                
-                                return {
-                                    ...vendor,
-                                    isAvailable: isTimeAvailable,
-                                    availableSlots: data.availableSlots || []
-                                };
-                            } catch (error) {
-                                console.error(`Error checking availability for ${vendor.name}:`, error);
-                                return {
-                                    ...vendor,
-                                    isAvailable: false,
-                                    availableSlots: []
-                                };
-                            }
-                        })
-                    );
-                    
-                    // FILTER OUT UNAVAILABLE VENDORS - Only show available ones!
-                    const availableVendors = vendorsWithAvailability.filter(vendor => vendor.isAvailable);
-                    
-                    setFilteredVendors(availableVendors);
-                    setSearchCompleted(true);
-                    setCurrentStep(3); // Move to results step
-                    
-                    // Show message if no vendors available
-                    if (availableVendors.length === 0) {
-                        alert('No vendors available for your selected date and time. Please try different options.');
+                // Modify the searchVendors function to use mock data if API fails:
+                // Fix the searchVendors function:
+                const searchVendors = async () => {
+                    if (!petType || !location || !petService || !selectedDate || !selectedTime) {
+                        alert('Please complete all fields before searching');
+                        return;
                     }
+
+                    setLoading(true);
+                    setSearchCompleted(false);
                     
-                } catch (error) {
-                    console.error('Error searching vendors:', error);
-                    alert('Error searching for vendors. Please try again.');
-                } finally {
-                    setLoading(false);
-                }
-            };
+                    try {
+                        // Filter vendors based on service type and availability
+                        const matchedVendors = vendors.filter(vendor => {
+                            // Check if vendor offers the selected service
+                            const hasService = vendor.services.some(service => 
+                                service.toLowerCase().includes(petService.toLowerCase())
+                            );
+                            
+                            // Check if vendor has availability for selected date and time
+                            const hasAvailability = vendor.availableSlots && 
+                                                vendor.availableSlots[selectedDate] && 
+                                                vendor.availableSlots[selectedDate].includes(selectedTime);
+                            
+                            return hasService && hasAvailability;
+                        });
+                        
+                        setFilteredVendors(matchedVendors);
+                        setSearchCompleted(true);
+                        setCurrentStep(3);
+                        
+                        if (matchedVendors.length === 0) {
+                            alert('No vendors available for your selected date and time. Please try different options.');
+                        }
+                        
+                    } catch (error) {
+                        console.error('Error searching vendors:', error);
+                        alert('Error searching for vendors. Please try again.');
+                    } finally {
+                        setLoading(false);
+                    }
+                };
 
             const resetSearch = () => {
                 setSearchCompleted(false);
