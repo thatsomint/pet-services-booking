@@ -289,22 +289,60 @@
         }
     }
 
-    function sendToServiceBus() {
-        // DEMO: Simulate sending to Azure Service Bus
-        const bookingComplete = {
-            bookingId: generateBookingId(),
-            customer: JSON.parse(localStorage.getItem('customerInfo')),
-            booking: bookingData,
-            timestamp: new Date().toISOString(),
-            status: 'confirmed',
-            note: 'DEMO MODE - This booking was created in demo mode without real payment processing'
-        };
+    async function sendToServiceBus() {
+    const bookingComplete = {
+        bookingId: generateBookingId(),
+        customer: JSON.parse(localStorage.getItem('customerInfo')),
+        booking: bookingData,
+        timestamp: new Date().toISOString(),
+        status: 'confirmed'
+    };
 
-        // Store in localStorage for demo records
+    console.log('📨 Sending to Service Bus simulation...');
+    
+    try {
+        // Try to send to your test endpoint
+        const response = await fetch(`${API_BASE_URL}/api/debug/service-bus-test`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(bookingComplete)
+        });
+        
+        if (response.ok) {
+            const result = await response.json();
+            console.log('✅ Service Bus simulation response:', result);
+            
+            // Update UI to show it worked
+            const bookingRefEl = document.getElementById('bookingReference');
+            if (bookingRefEl) {
+                bookingRefEl.innerHTML = `
+                    <strong>Booking Reference:</strong> ${bookingComplete.bookingId}<br>
+                    <strong>Service Bus:</strong> <span style="color: green;">✅ Message Processed</span><br>
+                    <small>Backend received and logged this booking</small>
+                `;
+            }
+        } else {
+            throw new Error('Backend not available');
+        }
+        
+    } catch (error) {
+        console.log('🔶 Backend unavailable, using localStorage fallback');
+        
+        // Fallback to localStorage
         const demoBookings = JSON.parse(localStorage.getItem('demoBookings') || '[]');
         demoBookings.push(bookingComplete);
         localStorage.setItem('demoBookings', JSON.stringify(demoBookings));
+        
+        const bookingRefEl = document.getElementById('bookingReference');
+        if (bookingRefEl) {
+            bookingRefEl.innerHTML = `
+                <strong>Booking Reference:</strong> ${bookingComplete.bookingId}<br>
+                <strong>Service Bus:</strong> <span style="color: orange;">🔄 Backend Offline - Stored Locally</span><br>
+                <small>Booking saved to browser storage for demo</small>
+            `;
+        }
     }
+}
 
     function generateBookingId() {
         return 'DEMO-' + Date.now() + '-' + Math.random().toString(36).substr(2, 6).toUpperCase();
