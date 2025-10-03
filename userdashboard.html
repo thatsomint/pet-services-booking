@@ -27,9 +27,12 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--light-brown);
-            color: #333;
+            background-color: var(--accent-cream);
+            color: var(--text-dark);
             line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
 
         .container {
@@ -40,40 +43,66 @@
 
         /* Header Styles */
         header {
-            background: var(--primary-brown);
-            color: white;
-            padding: 1rem 0;
-            box-shadow: var(--shadow);
+            background: linear-gradient(135deg, var(--accent-cream) 0%, #f0e9db 100%);
+            color: var(--text-dark);
+            padding: 10px 0;
+            box-shadow: 0 4px 12px rgba(85, 44, 31, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 2px solid var(--light-brown);
         }
 
         .header-content {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            gap: 18px;
         }
 
+        /* ===== LOGO STYLES ===== */
         .logo {
-            font-size: 1.8rem;
-            font-weight: bold;
-            color: white;
+            display: flex;
+            align-items: center;
             text-decoration: none;
+            gap: 12px;
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--primary-brown);
+        }
+
+        .logo-img {
+            height: auto;
+            width: 144px;
+            max-width: 144px;
+            object-fit: contain;
+            margin: -40px 0;
+            transition: transform 0.3s ease;
+        }
+
+        .logo-img:hover {
+            transform: scale(1.05);
         }
 
         nav ul {
             display: flex;
             list-style: none;
-            gap: 2rem;
+            gap: 30px;
         }
 
-        nav a {
-            color: white;
+        nav ul li a {
+            color: var(--primary-brown);
             text-decoration: none;
             font-weight: 500;
-            transition: color 0.3s ease;
+            transition: all 0.3s ease;
+            padding: 8px 16px;
+            border-radius: 6px;
         }
 
-        nav a:hover, nav a.active {
-            color: var(--accent-gold);
+        nav ul li a:hover,
+        nav ul li a.active {
+            background-color: rgba(85, 44, 31, 0.1);
+            color: var(--accent-teal);
         }
 
         .header-actions {
@@ -83,26 +112,37 @@
         }
 
         .cart-icon, .user-icon {
-            color: white;
-            font-size: 1.2rem;
-            text-decoration: none;
             position: relative;
+            color: var(--primary-brown);
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            padding: 8px;
+        }
+
+        .cart-icon:hover, .user-icon:hover {
+            color: var(--accent-teal);
         }
 
         .cart-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
             background: var(--accent-teal);
             color: white;
             border-radius: 50%;
-            padding: 0.2rem 0.5rem;
-            font-size: 0.8rem;
-            position: absolute;
-            top: -8px;
-            right: -8px;
+            width: 18px;
+            height: 18px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         /* Page Header */
         .page-header {
-            background: linear-gradient(135deg, var(--primary-brown) 0%, #6d3c2a 100%);
+    background: linear-gradient(rgba(85, 44, 31, 0.9), rgba(58, 30, 21, 0.9)), 
+                url('https://images.unsplash.com/photo-1511044568932-338cba0ad803?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D') center/cover;
             color: white;
             padding: 2rem 0;
             margin-bottom: 2rem;
@@ -476,14 +516,16 @@
     <header>
         <div class="container">
             <div class="header-content">
-                <a href="#" class="logo">PawfectFind</a>
-                <nav>
-                    <ul>
-                        <li><a href="#" class="active">Home</a></li>
-                        <li><a href="#">Services</a></li>
-                        <li><a href="#">Providers</a></li>
-                        <li><a href="#">About</a></li>
-                        <li><a href="#">Contact</a></li>
+                <img src="images/PawfectFind_logo.png" alt="PawfectFind Logo" 
+                    class="logo-img">
+            </a>
+            <nav>
+                <ul>
+                    <li><a href="index.html" class="active">Home</a></li>
+                    <li><a href="services.html">Services</a></li>
+                    <li><a href="providers.html">Providers</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="contact.html">Contact</a></li>
                     </ul>
                 </nav>
                 <div class="header-actions">
