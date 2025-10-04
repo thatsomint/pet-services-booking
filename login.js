@@ -36,7 +36,7 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
         messageDiv.textContent = 'Login successful! Redirecting...';
         
         setTimeout(() => {
-            window.location.href = 'userdashboard.html'; 
+            window.location.href = 'index.html'; 
         }, 1000);
         
     } catch (error) {
