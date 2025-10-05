@@ -5,7 +5,92 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PawfectFind - User Dashboard</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script type="module" src="userdashboard.js" defer></script>
+        <!-- Add Firebase Auth -->
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-auth.js";
+
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyD7K7u4qUTI9C5kOr4dUe6ND6EfnxeXU-Y",
+            authDomain: "pawfectfind-cc73e.firebaseapp.com",
+            projectId: "pawfectfind-cc73e",
+            storageBucket: "pawfectfind-cc73e.firebasestorage.app",
+            messagingSenderId: "9138302822",
+            appId: "1:9138302822:web:945e4e5e46e1a7b0f7a2a7"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        // Make auth available globally
+        window.firebaseAuth = auth;
+        
+        // Update user dropdown with actual user info
+        function updateUserDropdown(user) {
+            const userEmailElement = document.getElementById('userEmail');
+            const userDropdown = document.getElementById('userDropdown');
+            
+            if (user) {
+                // User is signed in
+                if (userEmailElement) {
+                    userEmailElement.textContent = user.email;
+                }
+                if (userDropdown) {
+                    userDropdown.innerHTML = `<i class="fas fa-user"></i> ${user.email.split('@')[0]}`;
+                    userDropdown.title = `Logged in as: ${user.email}`;
+                }
+                console.log('✅ User dropdown updated:', user.email);
+            } else {
+                // No user signed in
+                if (userEmailElement) {
+                    userEmailElement.textContent = 'Not logged in';
+                }
+                if (userDropdown) {
+                    userDropdown.innerHTML = '<i class="fas fa-user"></i> Account';
+                }
+                console.log('❌ No user signed in');
+            }
+        }
+        
+        // Logout function
+        function logoutUser() {
+            auth.signOut().then(() => {
+                console.log('✅ User signed out');
+                window.location.href = 'login.html';
+            }).catch((error) => {
+                console.error('❌ Logout error:', error);
+                alert('Logout failed: ' + error.message);
+            });
+        }
+        
+        // Auth state listener
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                console.log('🔥 User signed in:', user.email);
+                window.currentFirebaseUser = user;
+                updateUserDropdown(user);
+                
+                // Update page title with user's name
+                const pageTitle = document.querySelector('.page-title');
+                if (pageTitle) {
+                    const userName = user.displayName || user.email.split('@')[0];
+                    pageTitle.textContent = `${userName}'s Dashboard`;
+                }
+            } else {
+                console.log('❌ No user signed in');
+                updateUserDropdown(null);
+                // Optional: Redirect to login page
+                // window.location.href = 'login.html';
+            }
+        });
+        
+        // Make logout function available globally
+        window.logoutUser = logoutUser;
+    </script>
+    <script src="userdashboard.js" defer></script>
     <style>
         * {
             margin: 0;
@@ -61,16 +146,6 @@
         }
 
         /* ===== LOGO STYLES ===== */
-        .logo {
-            display: flex;
-            align-items: center;
-            text-decoration: none;
-            gap: 12px;
-            font-size: 28px;
-            font-weight: 700;
-            color: var(--primary-brown);
-        }
-
         .logo-img {
             height: auto;
             width: 144px;
@@ -141,8 +216,8 @@
 
         /* Page Header */
         .page-header {
-    background: linear-gradient(rgba(85, 44, 31, 0.9), rgba(58, 30, 21, 0.9)), 
-                url('https://images.unsplash.com/photo-1511044568932-338cba0ad803?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D') center/cover;
+            background: linear-gradient(rgba(85, 44, 31, 0.9), rgba(58, 30, 21, 0.9)), 
+                        url('https://images.unsplash.com/photo-1511044568932-338cba0ad803?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D') center/cover;
             color: white;
             padding: 2rem 0;
             margin-bottom: 2rem;
@@ -330,7 +405,9 @@
 
         .appointment-badge.grooming { background: var(--accent-teal); }
         .appointment-badge.vet { background: var(--primary-brown); }
-        .appointment-badge.sitting { background: var(--accent-gold); }
+        .appointment-badge.sitting { background: var(--accent-gold); color: #333; }
+        .appointment-badge.training { background: #96CEB4; }
+        .appointment-badge.hotel { background: #FFEAA7; color: #333; }
 
         .appointment-date {
             font-size: 1rem;
@@ -431,7 +508,7 @@
             min-width: 300px;
         }
 
-        #modalBackDrop {
+        .backdrop {
             display: none;
             position: fixed;
             top: 0;
@@ -516,16 +593,17 @@
     <header>
         <div class="container">
             <div class="header-content">
+            <a href="index.html" class="logo">
                 <img src="images/PawfectFind_logo.png" alt="PawfectFind Logo" 
                     class="logo-img">
             </a>
-            <nav>
-                <ul>
-                    <li><a href="index.html" class="active">Home</a></li>
-                    <li><a href="services.html">Services</a></li>
-                    <li><a href="providers.html">Providers</a></li>
-                    <li><a href="about.html">About</a></li>
-                    <li><a href="contact.html">Contact</a></li>
+                <nav>
+                    <ul>
+                        <li><a href="index.html" class="active">Home</a></li>
+                        <li><a href="services.html">Services</a></li>
+                        <li><a href="providers.html">Providers</a></li>
+                        <li><a href="about.html">About</a></li>
+                        <li><a href="contact.html">Contact</a></li>
                     </ul>
                 </nav>
                 <div class="header-actions">
@@ -533,10 +611,15 @@
                         <i class="fas fa-shopping-cart"></i>
                         <span class="cart-badge">2</span>
                     </a>
-                    <a href="#" class="user-icon">
-                        <i class="fas fa-user"></i>
-                    </a>
-                </div>
+                    <div class="user-dropdown">
+                        <a href="#" class="user-icon" id="userDropdown">
+                            <i class="fas fa-user"></i>
+                        </a>
+                        <div class="dropdown-content" id="dropdownContent">
+                            <span id="userEmail">Loading...</span>
+                            <a href="#" id="logoutBtn">Logout</a>
+                        </div>
+                    </div>
             </div>
         </div>
     </header>
@@ -563,7 +646,7 @@
                     <button id="backButton" class="nav-btn">
                         <i class="fas fa-chevron-left"></i> Back
                     </button>
-                    <div id="monthDisplay">December 2024</div>
+                    <div id="monthDisplay">October 2025</div>
                     <button id="nextButton" class="nav-btn">
                         Next <i class="fas fa-chevron-right"></i>
                     </button>
@@ -585,67 +668,29 @@
                 </div>
             </div>
 
-            <!-- Upcoming Appointments -->
+            <!-- Upcoming Appointments - DYNAMIC -->
             <div class="dashboard-card">
                 <h2 class="card-title">
                     <span class="card-icon"><i class="fas fa-bell"></i></span>
                     Upcoming Appointments
                 </h2>
                 <div class="appointments-list">
-                    <div class="appointment-item">
-                        <div class="appointment-badge grooming">Dog Grooming</div>
-                        <div class="appointment-date">December 8, 2024</div>
-                    </div>
-                    <div class="appointment-item">
-                        <div class="appointment-badge vet">Vet Appointment</div>
-                        <div class="appointment-date">December 15, 2024</div>
-                    </div>
-                    <div class="appointment-item">
-                        <div class="appointment-badge sitting">Pet Sitting</div>
-                        <div class="appointment-date">December 20, 2024</div>
-                    </div>
+                    <!-- Dynamic content from JavaScript -->
+                    <p style="text-align: center; color: #666; padding: 20px;">Loading appointments...</p>
                 </div>
             </div>
         </div>
 
         <div class="bottom-section">
-            <!-- Recent Service History -->
+            <!-- Recent Service History - DYNAMIC -->
             <div class="section-card">
                 <h2 class="card-title">
                     <span class="card-icon"><i class="fas fa-history"></i></span>
                     Recent Service History
                 </h2>
-                
-                <div class="booking-item">
-                    <div style="flex: 1;">
-                        <div class="booking-service">Premium Pet Grooming - Max</div>
-                        <div class="booking-time">Sep 25, 2024 • Professional grooming with full wash & dry service</div>
-                    </div>
-                    <div class="status-completed">✓ Completed</div>
-                </div>
-                
-                <div class="booking-item">
-                    <div style="flex: 1;">
-                        <div class="booking-service">Reliable Pet Sitting - Luna</div>
-                        <div class="booking-time">Sep 20, 2024 • Day care with overnight stay in your home</div>
-                    </div>
-                    <div class="status-completed">✓ Completed</div>
-                </div>
-                
-                <div class="booking-item">
-                    <div style="flex: 1;">
-                        <div class="booking-service">Premium Pet Hotel - Both Pets</div>
-                        <div class="booking-time">Sep 15, 2024 • 5-star boarding with climate-controlled suites</div>
-                    </div>
-                    <div class="status-completed">✓ Completed</div>
-                </div>
-
-                <div class="booking-item">
-                    <div style="flex: 1;">
-                        <div class="booking-service">Premium Pet Grooming - Max</div>
-                        <div class="booking-time">Dec 8, 2024 • Upcoming appointment with nail trimming</div>
-                    </div>
-                    <div class="status-upcoming">⏰ Upcoming</div>
+                <div class="history-list">
+                    <!-- Dynamic content from JavaScript -->
+                    <p style="text-align: center; color: #666; padding: 20px;">Loading service history...</p>
                 </div>
             </div>
 
@@ -683,9 +728,9 @@
             </div>
         </div>
     </div>
-  
-    // Modals
-    <div id="modalBackDrop"></div>
+
+    <!-- MODALS - Keep these at the bottom -->
+    <div id="modalBackDrop" class="backdrop"></div>
 
     <div id="newEventModal" class="modal">
         <h2>New Appointment</h2>
@@ -697,15 +742,86 @@
     </div>
 
     <div id="deleteEventModal" class="modal">
-        <h2>Appointment</h2>
-        <p id="eventText"></p>
+        <h2>Appointment Details</h2>
+        <p id="eventText">Loading appointment details...</p>
         <div class="modal-buttons">
-            <button id="deleteButton" class="modal-btn danger">Delete</button>
+            <button id="deleteButton" class="modal-btn danger">Cancel Appointment</button>
             <button id="closeButton" class="modal-btn secondary">Close</button>
         </div>
     </div>
 
+    <script>
+        // Add dropdown functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const userDropdown = document.getElementById('userDropdown');
+            const dropdownContent = document.getElementById('dropdownContent');
+            const logoutBtn = document.getElementById('logoutBtn');
+            const userEmail = document.getElementById('userEmail');
 
+            if (userDropdown && dropdownContent) {
+                userDropdown.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    dropdownContent.style.display = dropdownContent.style.display === 'block' ? 'none' : 'block';
+                });
 
+                // Close dropdown when clicking outside
+                document.addEventListener('click', function(e) {
+                    if (!userDropdown.contains(e.target) && !dropdownContent.contains(e.target)) {
+                        dropdownContent.style.display = 'none';
+                    }
+                });
+
+                // Logout functionality
+                if (logoutBtn) {
+                    logoutBtn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        if (window.logoutUser) {
+                            window.logoutUser();
+                        }
+                    });
+                }
+            }
+        });
+    </script>
+
+    <style>
+        /* Add dropdown styles */
+        .user-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            background-color: white;
+            min-width: 200px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1001;
+            border-radius: 8px;
+            padding: 1rem;
+        }
+
+        .dropdown-content span {
+            display: block;
+            padding: 8px 0;
+            color: #552c1f;
+            font-weight: 500;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 8px;
+        }
+
+        .dropdown-content a {
+            color: #dc3545;
+            text-decoration: none;
+            display: block;
+            padding: 8px 0;
+        }
+
+        .dropdown-content a:hover {
+            color: #c82333;
+        }
+    </style>
 </body>
 </html>
