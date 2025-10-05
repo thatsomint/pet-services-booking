@@ -182,6 +182,7 @@
         </div>
     </footer>
 
+
     <!-- React Booking System Component -->
     <!-- React and Babel Scripts -->
     <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
@@ -746,10 +747,7 @@ const MOCK_VENDORS = [
                                                     <div className="vendor-availability available">
                                                         ✅ Available on {selectedDate} at {selectedTime}
                                                     </div>
-                                                    <button 
-                                                        className="btn btn-primary"
-                                                        onClick={() => proceedToBooking(vendor)}
-                                                    >
+                                                    <button className="btn btn-primary availbookNow-btn" onClick={() => proceedToBooking(vendor)}>
                                                         Book Now
                                                     </button>
                                                 </div>
@@ -808,6 +806,22 @@ const MOCK_VENDORS = [
             });
         }
     }
+
+    // BookNow button functionality
+    function setupBookNowButtons() {
+        document.addEventListener('click', function(e) {
+        const bookNowBtn = e.target.closest('.availbookNow-btn');
+        
+        if (bookNowBtn && !auth.currentUser) {
+            e.preventDefault();
+            e.stopPropagation(); // Stop React handler from running
+            alert('Please log in to book a service.');
+            window.location.href = 'login.html';
+            return false;
+        }
+        }, true); // ← Add 'true' for capture phase
+    }   
+
 
     // Set an authentication state observer
     onAuthStateChanged(auth, (user) => {
@@ -884,6 +898,7 @@ const MOCK_VENDORS = [
     // Initialize dropdown when page loads
     document.addEventListener('DOMContentLoaded', function() {
         setupDropdown();
+        setupBookNowButtons();
     });
 </script>
 </body>
