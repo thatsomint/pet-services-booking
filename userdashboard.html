@@ -6,90 +6,112 @@
     <title>PawfectFind - User Dashboard</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
         <!-- Add Firebase Auth -->
-    <script type="module">
-        // Import the functions you need from the SDKs you need
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
-        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-auth.js";
+        <script type="module">
+            // Import the functions you need from the SDKs you need
+            import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
+            import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-auth.js";
 
-        // Your web app's Firebase configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyD7K7u4qUTI9C5kOr4dUe6ND6EfnxeXU-Y",
-            authDomain: "pawfectfind-cc73e.firebaseapp.com",
-            projectId: "pawfectfind-cc73e",
-            storageBucket: "pawfectfind-cc73e.firebasestorage.app",
-            messagingSenderId: "9138302822",
-            appId: "1:9138302822:web:945e4e5e46e1a7b0f7a2a7"
-        };
+            // Your web app's Firebase configuration
+            const firebaseConfig = {
+                apiKey: "AIzaSyD7K7u4qUTI9C5kOr4dUe6ND6EfnxeXU-Y",
+                authDomain: "pawfectfind-cc73e.firebaseapp.com",
+                projectId: "pawfectfind-cc73e",
+                storageBucket: "pawfectfind-cc73e.firebasestorage.app",
+                messagingSenderId: "9138302822",
+                appId: "1:9138302822:web:945e4e5e46e1a7b0f7a2a7"
+            };
 
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
+            // Initialize Firebase
+            const app = initializeApp(firebaseConfig);
+            const auth = getAuth(app);
 
-        // Make auth available globally
-        window.firebaseAuth = auth;
-        
-        // Update user dropdown with actual user info
-        function updateUserDropdown(user) {
-            const userEmailElement = document.getElementById('userEmail');
-            const userDropdown = document.getElementById('userDropdown');
+            // Make auth available globally
+            window.firebaseAuth = auth;
             
-            if (user) {
-                // User is signed in
-                if (userEmailElement) {
-                    userEmailElement.textContent = user.email;
-                }
-                if (userDropdown) {
-                    userDropdown.innerHTML = `<i class="fas fa-user"></i> ${user.email.split('@')[0]}`;
-                    userDropdown.title = `Logged in as: ${user.email}`;
-                }
-                console.log('✅ User dropdown updated:', user.email);
-            } else {
-                // No user signed in
-                if (userEmailElement) {
-                    userEmailElement.textContent = 'Not logged in';
-                }
-                if (userDropdown) {
-                    userDropdown.innerHTML = '<i class="fas fa-user"></i> Account';
-                }
-                console.log('❌ No user signed in');
-            }
-        }
-        
-        // Logout function
-        function logoutUser() {
-            auth.signOut().then(() => {
-                console.log('✅ User signed out');
-                window.location.href = 'login.html';
-            }).catch((error) => {
-                console.error('❌ Logout error:', error);
-                alert('Logout failed: ' + error.message);
-            });
-        }
-        
-        // Auth state listener
-        auth.onAuthStateChanged((user) => {
-            if (user) {
-                console.log('🔥 User signed in:', user.email);
-                window.currentFirebaseUser = user;
-                updateUserDropdown(user);
+            // ENHANCE THE updateUserDropdown FUNCTION IN INDEX.HTML
+            function updateUserDropdown(user) {
+                const userEmailElement = document.getElementById('userEmail');
+                const userDisplayNameElement = document.getElementById('userDisplayName');
+                const welcomeMessage = document.getElementById('welcomeMessage');
+                const dashboardLink = document.getElementById('dashboardLink');
+                const logoutBtn = document.getElementById('logoutBtn');
+                const loginLink = document.getElementById('loginLink');
+                const userDropdown = document.getElementById('userDropdown');
+                const userText = document.querySelector('.user-text');
                 
-                // Update page title with user's name
-                const pageTitle = document.querySelector('.page-title');
-                if (pageTitle) {
-                    const userName = user.displayName || user.email.split('@')[0];
-                    pageTitle.textContent = `${userName}'s Dashboard`;
+                if (user) {
+                    // User is signed in
+                    const displayName = user.displayName || user.email.split('@')[0];
+                    
+                    if (userEmailElement) {
+                        userEmailElement.textContent = user.email;
+                    }
+                    if (userDisplayNameElement) {
+                        userDisplayNameElement.textContent = displayName;
+                    }
+                    if (userDropdown) {
+                        userDropdown.innerHTML = `<i class="fas fa-user"></i><span class="user-text">${displayName}</span>`;
+                        userDropdown.title = `Logged in as: ${user.email}`;
+                    }
+                    
+                    // Show user-specific elements
+                    if (welcomeMessage) welcomeMessage.style.display = 'flex';
+                    if (dashboardLink) dashboardLink.style.display = 'flex';
+                    if (logoutBtn) logoutBtn.style.display = 'flex';
+                    if (loginLink) loginLink.style.display = 'none';
+                    
+                    console.log('✅ User dropdown updated:', user.email);
+                } else {
+                    // No user signed in
+                    if (userEmailElement) {
+                        userEmailElement.textContent = 'Not logged in';
+                    }
+                    if (userDropdown) {
+                        userDropdown.innerHTML = '<i class="fas fa-user"></i><span class="user-text">Account</span>';
+                    }
+                    
+                    // Hide user-specific elements
+                    if (welcomeMessage) welcomeMessage.style.display = 'none';
+                    if (dashboardLink) dashboardLink.style.display = 'none';
+                    if (logoutBtn) logoutBtn.style.display = 'none';
+                    if (loginLink) loginLink.style.display = 'flex';
+                    
+                    console.log('❌ No user signed in');
                 }
-            } else {
-                console.log('❌ No user signed in');
-                updateUserDropdown(null);
-                // Optional: Redirect to login page
-                // window.location.href = 'login.html';
+            }            
+            // Logout function
+            function logoutUser() {
+                signOut(auth).then(() => {
+                    console.log('✅ User signed out');
+                    window.location.href = 'index.html'; // Redirect to home after logout
+                }).catch((error) => {
+                    console.error('❌ Logout error:', error);
+                    alert('Logout failed: ' + error.message);
+                });
             }
-        });
-        
-        // Make logout function available globally
-        window.logoutUser = logoutUser;
-    </script>
+            
+            // Auth state listener
+            onAuthStateChanged(auth, (user) => {
+                if (user) {
+                    console.log('🔥 User signed in:', user.email);
+                    window.currentFirebaseUser = user;
+                    updateUserDropdown(user);
+                    
+                    // Update page title with user's name if on dashboard
+                    const pageTitle = document.querySelector('.page-title');
+                    if (pageTitle && window.location.pathname.includes('userdashboard.html')) {
+                        const userName = user.displayName || user.email.split('@')[0];
+                        pageTitle.textContent = `${userName}'s Dashboard`;
+                    }
+                } else {
+                    console.log('❌ No user signed in');
+                    updateUserDropdown(null);
+                }
+            });
+            
+            // Make logout function available globally
+            window.logoutUser = logoutUser;
+        </script>
     <script src="userdashboard.js" defer></script>
     <style>
         * {
@@ -606,18 +628,52 @@
                         <li><a href="contact.html">Contact</a></li>
                     </ul>
                 </nav>
-                <div class="header-actions">
-                    <a href="#" class="cart-icon">
-                        <i class="fas fa-shopping-cart"></i>
-                        <span class="cart-badge">2</span>
-                    </a>
-                    <div class="user-dropdown">
-                        <a href="#" class="user-icon" id="userDropdown">
-                            <i class="fas fa-user"></i>
-                        </a>
-                        <div class="dropdown-content" id="dropdownContent">
-                            <span id="userEmail">Loading...</span>
-                            <a href="#" id="logoutBtn">Logout</a>
+                    <div class="header-actions">
+                        <div class="cart-icon">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span class="cart-badge">2</span>
+                        </div>
+                        <div class="user-dropdown">
+                            <a href="#" class="user-icon" id="userDropdown">
+                                <i class="fas fa-user"></i>
+                                <span class="user-text">Account</span>
+                            </a>
+                            <div class="dropdown-content" id="dropdownContent">
+                                <!-- Welcome message for logged-in users -->
+                                <div id="welcomeMessage" class="dropdown-welcome" style="display: none;">
+                                    <i class="fas fa-smile"></i>
+                                    <div>
+                                        <div class="welcome-text">Welcome back!</div>
+                                        <div id="userDisplayName" class="user-name">User</div>
+                                    </div>
+                                </div>
+                                
+                                <!-- User email -->
+                                <div class="dropdown-email">
+                                    <i class="fas fa-envelope"></i>
+                                    <span id="userEmail">Not logged in</span>
+                                </div>
+                                
+                                <div class="dropdown-divider"></div>
+                                
+                                <!-- Dashboard link for logged-in users -->
+                                <a href="userdashboard.html" id="dashboardLink" class="dropdown-item" style="display: none;">
+                                    <i class="fas fa-tachometer-alt"></i>
+                                    <span>My Dashboard</span>
+                                </a>
+                                
+                                <!-- Logout button for logged-in users -->
+                                <a href="#" id="logoutBtn" class="dropdown-item logout-item" style="display: none;">
+                                    <i class="fas fa-sign-out-alt"></i>
+                                    <span>Logout</span>
+                                </a>
+                                
+                                <!-- Login link for non-logged-in users -->
+                                <a href="login.html" id="loginLink" class="dropdown-item login-item">
+                                    <i class="fas fa-sign-in-alt"></i>
+                                    <span>Login / Register</span>
+                                </a>
+                            </div>
                         </div>
                     </div>
             </div>
@@ -751,16 +807,17 @@
     </div>
 
     <script>
-        // Add dropdown functionality
+        // Enhanced dropdown functionality
         document.addEventListener('DOMContentLoaded', function() {
             const userDropdown = document.getElementById('userDropdown');
             const dropdownContent = document.getElementById('dropdownContent');
             const logoutBtn = document.getElementById('logoutBtn');
-            const userEmail = document.getElementById('userEmail');
+            const dashboardLink = document.getElementById('dashboardLink');
 
             if (userDropdown && dropdownContent) {
                 userDropdown.addEventListener('click', function(e) {
                     e.preventDefault();
+                    e.stopPropagation();
                     dropdownContent.style.display = dropdownContent.style.display === 'block' ? 'none' : 'block';
                 });
 
@@ -775,53 +832,243 @@
                 if (logoutBtn) {
                     logoutBtn.addEventListener('click', function(e) {
                         e.preventDefault();
+                        e.stopPropagation();
                         if (window.logoutUser) {
                             window.logoutUser();
                         }
+                    });
+                }
+
+                // Dashboard link - let it navigate normally, just close dropdown
+                if (dashboardLink) {
+                    dashboardLink.addEventListener('click', function(e) {
+                        dropdownContent.style.display = 'none';
                     });
                 }
             }
         });
     </script>
 
+
     <style>
-        /* Add dropdown styles */
+        /* ===== ENHANCED USER DROPDOWN STYLES ===== */
         .user-dropdown {
             position: relative;
             display: inline-block;
+        }
+
+        .user-icon {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            background: linear-gradient(135deg, var(--primary-brown) 0%, var(--accent-teal) 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            font-size: 14px;
+            box-shadow: 0 2px 8px rgba(85, 44, 31, 0.3);
+        }
+
+        .user-icon:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(85, 44, 31, 0.4);
+            background: linear-gradient(135deg, var(--accent-teal) 0%, var(--primary-brown) 100%);
+        }
+
+        .user-text {
+            font-size: 14px;
+            font-weight: 600;
         }
 
         .dropdown-content {
             display: none;
             position: absolute;
             right: 0;
-            background-color: white;
-            min-width: 200px;
-            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            top: 100%;
+            background: white;
+            min-width: 280px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
             z-index: 1001;
-            border-radius: 8px;
-            padding: 1rem;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 10px;
+            border: 2px solid var(--primary-brown);
         }
 
-        .dropdown-content span {
-            display: block;
-            padding: 8px 0;
-            color: #552c1f;
+        .dropdown-welcome {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid #f0f0f0;
+            margin-bottom: 12px;
+        }
+
+        .dropdown-welcome i {
+            font-size: 24px;
+            color: var(--accent-teal);
+            background: #f0f9f8;
+            padding: 8px;
+            border-radius: 50%;
+        }
+
+        .welcome-text {
+            font-size: 12px;
+            color: var(--text-light);
             font-weight: 500;
-            border-bottom: 1px solid #eee;
-            margin-bottom: 8px;
         }
 
-        .dropdown-content a {
-            color: #dc3545;
+        .user-name {
+            font-size: 14px;
+            color: var(--primary-brown);
+            font-weight: 700;
+        }
+
+        .dropdown-email {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 0;
+            border-bottom: 1px solid #f0f0f0;
+            margin-bottom: 12px;
+        }
+
+        .dropdown-email i {
+            color: var(--accent-teal);
+            font-size: 14px;
+            width: 16px;
+            text-align: center;
+        }
+
+        .dropdown-email span {
+            font-size: 13px;
+            color: var(--text-light);
+            font-weight: 500;
+        }
+
+        .dropdown-divider {
+            height: 1px;
+            background: #f0f0f0;
+            margin: 12px 0;
+        }
+
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            color: var(--text-dark);
             text-decoration: none;
-            display: block;
-            padding: 8px 0;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            font-size: 14px;
         }
 
-        .dropdown-content a:hover {
-            color: #c82333;
+        .dropdown-item:hover {
+            background: linear-gradient(135deg, #f8f4f0 0%, #f0e9db 100%);
+            color: var(--primary-brown);
+            transform: translateX(5px);
+        }
+
+        .dropdown-item i {
+            color: var(--accent-teal);
+            font-size: 16px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .login-item {
+            background: linear-gradient(135deg, var(--accent-teal) 0%, #23867a 100%);
+            color: white !important;
+            font-weight: 600;
+        }
+
+        .login-item:hover {
+            background: linear-gradient(135deg, #23867a 0%, var(--accent-teal) 100%) !important;
+            color: white !important;
+        }
+
+        .login-item i {
+            color: white !important;
+        }
+
+        .logout-item {
+            color: #dc3545;
+        }
+
+        .logout-item:hover {
+            color: #dc3545;
+            background: #f8f0f0 !important;
+        }
+
+        .logout-item i {
+            color: #dc3545;
+        }
+
+        /* Cart icon styles to match */
+        .cart-icon {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, var(--accent-gold) 0%, var(--accent-orange) 100%);
+            color: white;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(233, 196, 106, 0.3);
+        }
+
+        .cart-icon:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(233, 196, 106, 0.4);
+        }
+
+        .cart-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: var(--accent-teal);
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            border: 2px solid white;
+        }
+
+        /* Header actions layout */
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .user-icon .user-text {
+                display: none;
+            }
+            
+            .user-icon {
+                padding: 10px;
+            }
+            
+            .dropdown-content {
+                min-width: 250px;
+                right: -10px;
+            }
         }
     </style>
+
 </body>
 </html>

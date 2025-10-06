@@ -30,7 +30,7 @@
             // Make auth available globally
             window.firebaseAuth = auth;
             
-            // Enhanced user dropdown update function
+            // ENHANCE THE updateUserDropdown FUNCTION IN INDEX.HTML
             function updateUserDropdown(user) {
                 const userEmailElement = document.getElementById('userEmail');
                 const userDisplayNameElement = document.getElementById('userDisplayName');
@@ -39,6 +39,7 @@
                 const logoutBtn = document.getElementById('logoutBtn');
                 const loginLink = document.getElementById('loginLink');
                 const userDropdown = document.getElementById('userDropdown');
+                const userText = document.querySelector('.user-text');
                 
                 if (user) {
                     // User is signed in
@@ -51,14 +52,14 @@
                         userDisplayNameElement.textContent = displayName;
                     }
                     if (userDropdown) {
-                        userDropdown.innerHTML = `<i class="fas fa-user"></i> ${displayName}`;
+                        userDropdown.innerHTML = `<i class="fas fa-user"></i><span class="user-text">${displayName}</span>`;
                         userDropdown.title = `Logged in as: ${user.email}`;
                     }
                     
                     // Show user-specific elements
-                    if (welcomeMessage) welcomeMessage.style.display = 'block';
-                    if (dashboardLink) dashboardLink.style.display = 'block';
-                    if (logoutBtn) logoutBtn.style.display = 'block';
+                    if (welcomeMessage) welcomeMessage.style.display = 'flex';
+                    if (dashboardLink) dashboardLink.style.display = 'flex';
+                    if (logoutBtn) logoutBtn.style.display = 'flex';
                     if (loginLink) loginLink.style.display = 'none';
                     
                     console.log('✅ User dropdown updated:', user.email);
@@ -68,19 +69,18 @@
                         userEmailElement.textContent = 'Not logged in';
                     }
                     if (userDropdown) {
-                        userDropdown.innerHTML = '<i class="fas fa-user"></i> Account';
+                        userDropdown.innerHTML = '<i class="fas fa-user"></i><span class="user-text">Account</span>';
                     }
                     
                     // Hide user-specific elements
                     if (welcomeMessage) welcomeMessage.style.display = 'none';
                     if (dashboardLink) dashboardLink.style.display = 'none';
                     if (logoutBtn) logoutBtn.style.display = 'none';
-                    if (loginLink) loginLink.style.display = 'block';
+                    if (loginLink) loginLink.style.display = 'flex';
                     
                     console.log('❌ No user signed in');
                 }
-            }
-            
+            }            
             // Logout function
             function logoutUser() {
                 signOut(auth).then(() => {
@@ -132,40 +132,54 @@
                     <li><a href="contact.html">Contact</a></li>
                 </ul>
             </nav>
-            <div class="header-actions">
-                <div class="cart-icon">
-                    <i class="fas fa-shopping-cart"></i>
-                <span class="cart-badge">2</span>
-                </div>
-                    <div class="user-dropdown">
-                        <a href="#" class="user-icon" id="userDropdown">
-                            <i class="fas fa-user"></i>
-                        </a>
-                        <div class="dropdown-content" id="dropdownContent">
-                            <!-- Welcome message for logged-in users -->
-                            <span id="welcomeMessage" style="display: none;">
-                                Welcome, <span id="userDisplayName">User</span>!
-                            </span>
-                            
-                            <!-- User email -->
-                            <span id="userEmail">Loading...</span>
-                            
-                            <!-- Dashboard link for logged-in users -->
-                            <a href="userdashboard.html" id="dashboardLink" style="display: none;">
-                                <i class="fas fa-tachometer-alt"></i> Dashboard
-                            </a>
-                            
-                            <!-- Logout button for logged-in users -->
-                            <a href="#" id="logoutBtn" style="display: none;">
-                                <i class="fas fa-sign-out-alt"></i> Logout
-                            </a>
-                            
-                            <!-- Login link for non-logged-in users -->
-                            <a class="dropdown-item" href="login.html" id="loginLink" style="display: none;">
-                                <i class="fas fa-sign-in-alt"></i> Login
-                            </a>
+<!-- REPLACE THE ENTIRE HEADER-ACTIONS SECTION IN INDEX.HTML -->
+                    <div class="header-actions">
+                        <div class="cart-icon">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span class="cart-badge">2</span>
                         </div>
-                    </div>
+                        <div class="user-dropdown">
+                            <a href="#" class="user-icon" id="userDropdown">
+                                <i class="fas fa-user"></i>
+                                <span class="user-text">Account</span>
+                            </a>
+                            <div class="dropdown-content" id="dropdownContent">
+                                <!-- Welcome message for logged-in users -->
+                                <div id="welcomeMessage" class="dropdown-welcome" style="display: none;">
+                                    <i class="fas fa-smile"></i>
+                                    <div>
+                                        <div class="welcome-text">Welcome back!</div>
+                                        <div id="userDisplayName" class="user-name">User</div>
+                                    </div>
+                                </div>
+                                
+                                <!-- User email -->
+                                <div class="dropdown-email">
+                                    <i class="fas fa-envelope"></i>
+                                    <span id="userEmail">Not logged in</span>
+                                </div>
+                                
+                                <div class="dropdown-divider"></div>
+                                
+                                <!-- Dashboard link for logged-in users -->
+                                <a href="userdashboard.html" id="dashboardLink" class="dropdown-item" style="display: none;">
+                                    <i class="fas fa-tachometer-alt"></i>
+                                    <span>My Dashboard</span>
+                                </a>
+                                
+                                <!-- Logout button for logged-in users -->
+                                <a href="#" id="logoutBtn" class="dropdown-item logout-item" style="display: none;">
+                                    <i class="fas fa-sign-out-alt"></i>
+                                    <span>Logout</span>
+                                </a>
+                                
+                                <!-- Login link for non-logged-in users -->
+                                <a href="login.html" id="loginLink" class="dropdown-item login-item">
+                                    <i class="fas fa-sign-in-alt"></i>
+                                    <span>Login / Register</span>
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -939,94 +953,224 @@ const MOCK_VENDORS = [
         });
     </script>
 
-        <style>
-        /* Enhanced dropdown styles */
+
+    <style>
+        /* ===== ENHANCED USER DROPDOWN STYLES ===== */
         .user-dropdown {
             position: relative;
             display: inline-block;
+        }
+
+        .user-icon {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            background: linear-gradient(135deg, var(--primary-brown) 0%, var(--accent-teal) 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            font-size: 14px;
+            box-shadow: 0 2px 8px rgba(85, 44, 31, 0.3);
+        }
+
+        .user-icon:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(85, 44, 31, 0.4);
+            background: linear-gradient(135deg, var(--accent-teal) 0%, var(--primary-brown) 100%);
+        }
+
+        .user-text {
+            font-size: 14px;
+            font-weight: 600;
         }
 
         .dropdown-content {
             display: none;
             position: absolute;
             right: 0;
-            background-color: white;
-            min-width: 220px;
-            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            top: 100%;
+            background: white;
+            min-width: 280px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
             z-index: 1001;
-            border-radius: 8px;
-            padding: 1rem;
-            margin-top: 5px;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 10px;
+            border: 2px solid var(--primary-brown);
         }
 
-        .dropdown-content span {
-            display: block;
-            padding: 8px 0;
-            color: #552c1f;
+        .dropdown-welcome {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid #f0f0f0;
+            margin-bottom: 12px;
+        }
+
+        .dropdown-welcome i {
+            font-size: 24px;
+            color: var(--accent-teal);
+            background: #f0f9f8;
+            padding: 8px;
+            border-radius: 50%;
+        }
+
+        .welcome-text {
+            font-size: 12px;
+            color: var(--text-light);
             font-weight: 500;
         }
 
-        #welcomeMessage {
-            border-bottom: 1px solid #eee;
-            margin-bottom: 8px;
-            font-weight: bold;
+        .user-name {
+            font-size: 14px;
+            color: var(--primary-brown);
+            font-weight: 700;
         }
 
-        #userEmail {
-            color: #666;
-            font-size: 0.9em;
-            margin-bottom: 8px;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 8px;
-        }
-
-        .dropdown-content a {
-            color: #333;
-            text-decoration: none;
+        .dropdown-email {
             display: flex;
             align-items: center;
-            padding: 8px 0;
-            transition: color 0.3s ease;
+            gap: 10px;
+            padding: 10px 0;
+            border-bottom: 1px solid #f0f0f0;
+            margin-bottom: 12px;
         }
 
-        .dropdown-content a i {
-            margin-right: 8px;
+        .dropdown-email i {
+            color: var(--accent-teal);
+            font-size: 14px;
             width: 16px;
             text-align: center;
         }
 
-        .dropdown-content a:hover {
-            color: #007bff;
-            background-color: transparent;
+        .dropdown-email span {
+            font-size: 13px;
+            color: var(--text-light);
+            font-weight: 500;
         }
 
-        #dashboardLink {
-            color: #007bff;
+        .dropdown-divider {
+            height: 1px;
+            background: #f0f0f0;
+            margin: 12px 0;
         }
 
-        #logoutBtn {
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            color: var(--text-dark);
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .dropdown-item:hover {
+            background: linear-gradient(135deg, #f8f4f0 0%, #f0e9db 100%);
+            color: var(--primary-brown);
+            transform: translateX(5px);
+        }
+
+        .dropdown-item i {
+            color: var(--accent-teal);
+            font-size: 16px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .login-item {
+            background: linear-gradient(135deg, var(--accent-teal) 0%, #23867a 100%);
+            color: white !important;
+            font-weight: 600;
+        }
+
+        .login-item:hover {
+            background: linear-gradient(135deg, #23867a 0%, var(--accent-teal) 100%) !important;
+            color: white !important;
+        }
+
+        .login-item i {
+            color: white !important;
+        }
+
+        .logout-item {
             color: #dc3545;
         }
 
-        #loginLink {
-            color: #007bff;
+        .logout-item:hover {
+            color: #dc3545;
+            background: #f8f0f0 !important;
         }
 
-        /* User icon styling */
-        .user-icon {
-            background: #007bff;
-            color: white;
-            padding: 10px 12px;
-            border-radius: 50%;
-            text-decoration: none;
-            display: inline-flex;
+        .logout-item i {
+            color: #dc3545;
+        }
+
+        /* Cart icon styles to match */
+        .cart-icon {
+            position: relative;
+            display: flex;
             align-items: center;
             justify-content: center;
-            transition: background-color 0.3s ease;
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, var(--accent-gold) 0%, var(--accent-orange) 100%);
+            color: white;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(233, 196, 106, 0.3);
         }
 
-        .user-icon:hover {
-            background: #0056b3;
+        .cart-icon:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(233, 196, 106, 0.4);
+        }
+
+        .cart-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: var(--accent-teal);
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            border: 2px solid white;
+        }
+
+        /* Header actions layout */
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .user-icon .user-text {
+                display: none;
+            }
+            
+            .user-icon {
+                padding: 10px;
+            }
+            
+            .dropdown-content {
+                min-width: 250px;
+                right: -10px;
+            }
         }
     </style>
 </body>
