@@ -26,14 +26,29 @@
                 </ul>
             </nav>
             <div class="header-actions">
-            <div class="cart-icon">
-                <i class="fas fa-shopping-cart"></i>
-            <span class="cart-badge">2</span>
-            </div>
-            <div class="user-icon" id="userIcon">
-                <i class="fas fa-user"></i>
-            <span id="userStatus" style="display: none;"></span>
-            </div>
+                <div class="cart-icon">
+                    <i class="fas fa-shopping-cart"></i>
+                <span class="cart-badge">2</span>
+                </div>
+                <div class="dropdown">
+                    <div class="user-icon dropdown-toggle" id="userIcon" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="fas fa-user"></i>
+                        <span id="userStatus" style="display: none;"></span>
+                        <i class="fas fa-caret-down" style="margin-left: 5px; font-size: 12px;"></i>
+                    </div>
+                    <div class="dropdown-menu" aria-labelledby="userIcon">
+                        <a class="dropdown-item" href="userdashboard.html" id="dashboardLink">
+                            <i class="fas fa-tachometer-alt"></i> Dashboard
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="logout-test.html" id="logoutLink">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </a>
+                        <a class="dropdown-item" href="login.html" id="loginLink" style="display: none;">
+                            <i class="fas fa-sign-in-alt"></i> Login
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
     </header>
@@ -166,6 +181,143 @@
             </div>
         </div>
     </footer>
+
+    <script type ="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";    
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-auth.js";
+
+    // Firebase configuration
+    const firebaseConfig = {
+        apiKey: "AIzaSyD7K7u4qUTI9C5kOr4dUe6ND6EfnxeXU-Y",
+        authDomain: "pawfectfind-cc73e.firebaseapp.com",
+        projectId: "pawfectfind-cc73e",
+        storageBucket: "pawfectfind-cc73e.firebasestorage.app",
+        messagingSenderId: "9138302822",
+        appId: "1:9138302822:web:945e4e5e46e1a7b0f7a2a7"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    window.getAuth = () => auth;
+
+    // Dropdown functionality
+    function setupDropdown() {
+        const userIcon = document.getElementById('userIcon');
+        const dropdownMenu = document.querySelector('.dropdown-menu');
+        
+        if (userIcon && dropdownMenu) {
+            userIcon.addEventListener('click', function(e) {
+                e.stopPropagation();
+                dropdownMenu.classList.toggle('show');
+            });
+            
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function() {
+                dropdownMenu.classList.remove('show');
+            });
+            
+            // Prevent dropdown from closing when clicking inside it
+            dropdownMenu.addEventListener('click', function(e) {
+                e.stopPropagation();
+            });
+        }
+    }
+
+    // BookNow button functionality
+    // function setupBookNowButtons() {
+    //     document.addEventListener('click', function(e) {
+    //     const bookNowBtn = e.target.closest('.availbookNow-btn');
+        
+    //     if (bookNowBtn && !auth.currentUser) {
+    //         e.preventDefault();
+    //         e.stopPropagation(); // Stop React handler from running
+    //         alert('Please log in to book a service.');
+    //         window.location.href = 'login.html';
+    //         return false;
+    //     }
+    //     }, true); // ← Add 'true' for capture phase
+    // }   
+
+
+    // Set an authentication state observer
+    onAuthStateChanged(auth, (user) => {
+        const userStatus = document.getElementById('userStatus');
+        const loginLink = document.getElementById('loginLink');
+        const logoutLink = document.getElementById('logoutLink');
+        const dashboardLink = document.getElementById('dashboardLink');
+
+        if (user) {
+            // User is signed in message on console for testing
+            console.log('User is signed in:', user.email);
+            
+            // Display welcome message with user email
+            const userEmail = user.email;
+            const displayName = user.displayName || userEmail.split('@')[0]; // Use display name or first part of email
+            userStatus.textContent = `Welcome, ${displayName}`;
+            userStatus.style.display = 'inline';
+            userStatus.style.color = 'var(--primary-brown)';
+            userStatus.style.marginLeft = '5px';
+            userStatus.style.fontSize = '12px';
+            userStatus.style.fontWeight = '600';
+            userStatus.style.maxWidth = '150px';
+            userStatus.style.overflow = 'hidden';
+            userStatus.style.textOverflow = 'ellipsis';
+            userStatus.style.whiteSpace = 'nowrap';
+
+            // Show logout, hide login
+            logoutLink.style.display = 'block';
+            loginLink.style.display = 'none';
+            dashboardLink.style.display = 'block';
+
+        } else {
+            // User is signed out
+            console.log('User is signed out');
+            userStatus.textContent = '';
+            userStatus.style.display = 'none';
+
+            // Show login, hide logout and dashboard
+            logoutLink.style.display = 'none';
+            loginLink.style.display = 'block';
+            dashboardLink.style.display = 'none';
+
+        }
+    }); 
+
+    // Logout functionality 
+    document.getElementById('logoutLink').addEventListener('click', async(e) => {
+        e.preventDefault();
+
+        try {
+            // Close dropdown first
+            document.querySelector('.dropdown-menu').classList.remove('show');
+            
+            // Show logout confirmation
+            const confirmLogout = confirm('Are you sure you want to log out?');
+            if (!confirmLogout) return;
+            
+            // Perform logout
+            await signOut(auth);
+            console.log('User signed out successfully');
+            
+            // Show success message - this will work because no redirect
+            alert('You have been logged out successfully');
+            
+            // NO REDIRECT NEEDED - let onAuthStateChanged update the UI
+            // The page will automatically show the logged-out state
+            
+        } catch (error) {
+            console.error('Logout error:', error);
+            alert('Error signing out. Please try again.');
+        }
+    });
+
+    // Initialize dropdown when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+        setupDropdown();
+        // setupBookNowButtons();
+    });
+</script>
 
     <!-- React Booking System Component -->
     <!-- React and Babel Scripts -->
@@ -432,8 +584,28 @@ const MOCK_VENDORS = [
             };
 
             const proceedToBooking = (vendor) => {
-                // Since we only show available vendors, no need to check availability again
-                // Store booking data for confirmation page
+                // Check if user is logged in
+                const auth = window.getAuth && window.getAuth();
+                const user = auth ? auth.currentUser : null;
+                
+                if (!user) {
+                    // User not logged in - save booking data and redirect to login
+                    const bookingData = {
+                        service: petService,
+                        vendor: vendor.name,
+                        vendorId: vendor.id,
+                        date: selectedDate,
+                        time: selectedTime,
+                        price: vendor.price
+                    };
+                    localStorage.setItem('pendingBooking', JSON.stringify(bookingData));
+                    localStorage.setItem('loginRedirectSource', 'bookNow');
+                    alert('Please log in to book a service.');
+                    window.location.href = 'login.html';
+                    return;
+                }
+                
+                // User is logged in - proceed with booking
                 localStorage.setItem('bookingService', petService);
                 localStorage.setItem('bookingVendor', vendor.name);
                 localStorage.setItem('bookingVendorId', vendor.id);
@@ -441,7 +613,6 @@ const MOCK_VENDORS = [
                 localStorage.setItem('bookingTime', selectedTime);
                 localStorage.setItem('bookingPrice', vendor.price);
                 
-                // Redirect to confirmation page
                 window.location.href = `booking-confirmation.html?service=${petService}&vendor=${vendor.name}&date=${selectedDate}&time=${selectedTime}&price=${vendor.price}`;
             };
 
@@ -731,10 +902,7 @@ const MOCK_VENDORS = [
                                                     <div className="vendor-availability available">
                                                         ✅ Available on {selectedDate} at {selectedTime}
                                                     </div>
-                                                    <button 
-                                                        className="btn btn-primary"
-                                                        onClick={() => proceedToBooking(vendor)}
-                                                    >
+                                                    <button className="btn btn-primary availbookNow-btn" onClick={() => proceedToBooking(vendor)}>
                                                         Book Now
                                                     </button>
                                                 </div>
@@ -752,33 +920,5 @@ const MOCK_VENDORS = [
         const root = ReactDOM.createRoot(document.getElementById('root'));
         root.render(<PetServicesApp />);
     </script>
-    <script>
-    // Handle user icon click
-    document.getElementById('userIcon').addEventListener('click', function() {
-        const user = localStorage.getItem('user');
-        if (user) {
-            // User is logged in - show profile dropdown or redirect to profile
-            alert('User is logged in!'); // Replace with actual profile page
-        } else {
-            // User is not logged in - redirect to login
-            window.location.href = 'login.html';
-        }
-    });
-
-    // Update user status on page load
-    window.addEventListener('DOMContentLoaded', function() {
-        const user = localStorage.getItem('user');
-        const userStatus = document.getElementById('userStatus');
-        
-        if (user) {
-            const userData = JSON.parse(user);
-            userStatus.textContent = '✓';
-            userStatus.style.display = 'inline';
-            userStatus.style.color = 'green';
-            userStatus.style.marginLeft = '5px';
-            userStatus.style.fontSize = '12px';
-        }
-    });
-</script>
 </body>
 </html>

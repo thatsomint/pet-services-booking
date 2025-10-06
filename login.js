@@ -35,8 +35,23 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
         messageDiv.style.color = 'green';
         messageDiv.textContent = 'Login successful! Redirecting...';
         
+        // Check for pending booking
+        const pendingBooking = localStorage.getItem('pendingBooking');
+        const loginRedirectSource = localStorage.getItem('loginRedirectSource');
+        
         setTimeout(() => {
-            window.location.href = 'userdashboard.html'; 
+            if (pendingBooking) {
+                      // Redirect to booking confirmation with saved data
+                      const bookingData = JSON.parse(pendingBooking);
+                      window.location.href = `booking-confirmation.html?service=${encodeURIComponent(bookingData.service)}&vendor=${encodeURIComponent(bookingData.vendor)}&date=${encodeURIComponent(bookingData.date)}&time=${encodeURIComponent(bookingData.time)}&price=${encodeURIComponent(bookingData.price)}&vendorId=${encodeURIComponent(bookingData.vendorId)}`;
+                      
+                      // Clear the stored data
+                      localStorage.removeItem('pendingBooking');
+                      localStorage.removeItem('loginRedirectSource');
+                } else {
+                      // Default redirect to dashboard
+                      window.location.href = 'userdashboard.html';
+                }
         }, 1000);
         
     } catch (error) {
