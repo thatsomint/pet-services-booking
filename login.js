@@ -35,23 +35,39 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
         messageDiv.style.color = 'green';
         messageDiv.textContent = 'Login successful! Redirecting...';
         
-        // Check for pending booking
-        const pendingBooking = localStorage.getItem('pendingBooking');
-        const loginRedirectSource = localStorage.getItem('loginRedirectSource');
+        // Get URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const hasBookingData = urlParams.has('redirect') && urlParams.get('redirect') === 'booking';
         
         setTimeout(() => {
-            if (pendingBooking) {
-                      // Redirect to booking confirmation with saved data
-                      const bookingData = JSON.parse(pendingBooking);
-                      window.location.href = `booking-confirmation.html?service=${encodeURIComponent(bookingData.service)}&vendor=${encodeURIComponent(bookingData.vendor)}&date=${encodeURIComponent(bookingData.date)}&time=${encodeURIComponent(bookingData.time)}&price=${encodeURIComponent(bookingData.price)}&vendorId=${encodeURIComponent(bookingData.vendorId)}`;
-                      
-                      // Clear the stored data
-                      localStorage.removeItem('pendingBooking');
-                      localStorage.removeItem('loginRedirectSource');
+            if (hasBookingData) {
+                // Extract booking parameters from URL
+                const service = urlParams.get('service');
+                const vendor = urlParams.get('vendor');
+                const vendorId = urlParams.get('vendorId');
+                const date = urlParams.get('date');
+                const time = urlParams.get('time');
+                const price = urlParams.get('price');
+                
+                // Redirect to booking confirmation with all parameters
+                const bookingUrl = `booking-confirmation.html?service=${encodeURIComponent(service)}&vendor=${encodeURIComponent(vendor)}&vendorId=${encodeURIComponent(vendorId)}&date=${encodeURIComponent(date)}&time=${encodeURIComponent(time)}&price=${encodeURIComponent(price)}`;
+                window.location.href = bookingUrl;
+            } else {
+                // Check localStorage as fallback (for backwards compatibility)
+                const pendingBooking = localStorage.getItem('pendingBooking');
+                
+                if (pendingBooking) {
+                    const bookingData = JSON.parse(pendingBooking);
+                    window.location.href = `booking-confirmation.html?service=${encodeURIComponent(bookingData.service)}&vendor=${encodeURIComponent(bookingData.vendor)}&date=${encodeURIComponent(bookingData.date)}&time=${encodeURIComponent(bookingData.time)}&price=${encodeURIComponent(bookingData.price)}&vendorId=${encodeURIComponent(bookingData.vendorId)}`;
+                    
+                    // Clear the stored data
+                    localStorage.removeItem('pendingBooking');
+                    localStorage.removeItem('loginRedirectSource');
                 } else {
-                      // Default redirect to dashboard
-                      window.location.href = 'userdashboard.html';
+                    // Default redirect to dashboard
+                    window.location.href = 'userdashboard.html';
                 }
+            }
         }, 1000);
         
     } catch (error) {

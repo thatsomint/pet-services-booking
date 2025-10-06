@@ -583,37 +583,31 @@ const MOCK_VENDORS = [
                 setCurrentStep(1);
             };
 
+            // Change to using URL param
             const proceedToBooking = (vendor) => {
                 // Check if user is logged in
                 const auth = window.getAuth && window.getAuth();
                 const user = auth ? auth.currentUser : null;
                 
                 if (!user) {
-                    // User not logged in - save booking data and redirect to login
-                    const bookingData = {
+                    // User not logged in - encode booking data as URL parameters
+                    const bookingParams = new URLSearchParams({
                         service: petService,
                         vendor: vendor.name,
                         vendorId: vendor.id,
                         date: selectedDate,
                         time: selectedTime,
-                        price: vendor.price
-                    };
-                    localStorage.setItem('pendingBooking', JSON.stringify(bookingData));
-                    localStorage.setItem('loginRedirectSource', 'bookNow');
+                        price: vendor.price,
+                        redirect: 'booking'
+                    });
+                    
                     alert('Please log in to book a service.');
-                    window.location.href = 'login.html';
+                    window.location.href = `login.html?${bookingParams.toString()}`;
                     return;
                 }
                 
                 // User is logged in - proceed with booking
-                localStorage.setItem('bookingService', petService);
-                localStorage.setItem('bookingVendor', vendor.name);
-                localStorage.setItem('bookingVendorId', vendor.id);
-                localStorage.setItem('bookingDate', selectedDate);
-                localStorage.setItem('bookingTime', selectedTime);
-                localStorage.setItem('bookingPrice', vendor.price);
-                
-                window.location.href = `booking-confirmation.html?service=${petService}&vendor=${vendor.name}&date=${selectedDate}&time=${selectedTime}&price=${vendor.price}`;
+                window.location.href = `booking-confirmation.html?service=${encodeURIComponent(petService)}&vendor=${encodeURIComponent(vendor.name)}&vendorId=${encodeURIComponent(vendor.id)}&date=${encodeURIComponent(selectedDate)}&time=${encodeURIComponent(selectedTime)}&price=${encodeURIComponent(vendor.price)}`;
             };
 
             const renderCalendar = () => {
