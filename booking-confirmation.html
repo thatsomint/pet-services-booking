@@ -4,18 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Booking Confirmation - PawfectFind</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="./style/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Add Firebase SDK -->
+    
+    <!-- Firebase SDK must load first -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
 
-        <script type="module">
-            // Import the functions you need from the SDKs you need
-            import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
-            import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-auth.js";
-
-            // Your web app's Firebase configuration
+    <script>
+        // Wait for DOM to be ready before initializing Firebase
+        document.addEventListener('DOMContentLoaded', function() {
+            // Firebase configuration
             const firebaseConfig = {
                 apiKey: "AIzaSyD7K7u4qUTI9C5kOr4dUe6ND6EfnxeXU-Y",
                 authDomain: "pawfectfind-cc73e.firebaseapp.com",
@@ -26,97 +25,104 @@
             };
 
             // Initialize Firebase
-            const app = initializeApp(firebaseConfig);
-            const auth = getAuth(app);
-
-            // Make auth available globally
-            window.firebaseAuth = auth;
-            
-            // ENHANCE THE updateUserDropdown FUNCTION IN INDEX.HTML
-            function updateUserDropdown(user) {
-                const userEmailElement = document.getElementById('userEmail');
-                const userDisplayNameElement = document.getElementById('userDisplayName');
-                const welcomeMessage = document.getElementById('welcomeMessage');
-                const dashboardLink = document.getElementById('dashboardLink');
-                const logoutBtn = document.getElementById('logoutBtn');
-                const loginLink = document.getElementById('loginLink');
-                const userDropdown = document.getElementById('userDropdown');
-                const userText = document.querySelector('.user-text');
+            try {
+                // Check if Firebase is already initialized
+                if (!firebase.apps.length) {
+                    firebase.initializeApp(firebaseConfig);
+                }
                 
-                if (user) {
-                    // User is signed in
-                    const displayName = user.displayName || user.email.split('@')[0];
+                const auth = firebase.auth();
+                
+                // Make auth available globally
+                window.firebaseAuth = auth;
+                window.firebaseApp = firebase.app();
+                
+                console.log('✅ Firebase initialized successfully');
+                
+                // Enhanced user dropdown function
+                function updateUserDropdown(user) {
+                    const userEmailElement = document.getElementById('userEmail');
+                    const userDisplayNameElement = document.getElementById('userDisplayName');
+                    const welcomeMessage = document.getElementById('welcomeMessage');
+                    const dashboardLink = document.getElementById('dashboardLink');
+                    const logoutBtn = document.getElementById('logoutBtn');
+                    const loginLink = document.getElementById('loginLink');
+                    const userDropdown = document.getElementById('userDropdown');
+                    const userText = document.querySelector('.user-text');
                     
-                    if (userEmailElement) {
-                        userEmailElement.textContent = user.email;
+                    if (user) {
+                        // User is signed in
+                        const displayName = user.displayName || user.email.split('@')[0];
+                        
+                        if (userEmailElement) {
+                            userEmailElement.textContent = user.email;
+                        }
+                        if (userDisplayNameElement) {
+                            userDisplayNameElement.textContent = displayName;
+                        }
+                        if (userDropdown) {
+                            userDropdown.innerHTML = `<i class="fas fa-user"></i><span class="user-text">${displayName}</span>`;
+                            userDropdown.title = `Logged in as: ${user.email}`;
+                        }
+                        
+                        // Show user-specific elements
+                        if (welcomeMessage) welcomeMessage.style.display = 'flex';
+                        if (dashboardLink) dashboardLink.style.display = 'flex';
+                        if (logoutBtn) logoutBtn.style.display = 'flex';
+                        if (loginLink) loginLink.style.display = 'none';
+                        
+                        console.log('✅ User dropdown updated:', user.email);
+                    } else {
+                        // No user signed in
+                        if (userEmailElement) {
+                            userEmailElement.textContent = 'Not logged in';
+                        }
+                        if (userDropdown) {
+                            userDropdown.innerHTML = '<i class="fas fa-user"></i><span class="user-text">Account</span>';
+                        }
+                        
+                        // Hide user-specific elements
+                        if (welcomeMessage) welcomeMessage.style.display = 'none';
+                        if (dashboardLink) dashboardLink.style.display = 'none';
+                        if (logoutBtn) logoutBtn.style.display = 'none';
+                        if (loginLink) loginLink.style.display = 'flex';
+                        
+                        console.log('❌ No user signed in');
                     }
-                    if (userDisplayNameElement) {
-                        userDisplayNameElement.textContent = displayName;
-                    }
-                    if (userDropdown) {
-                        userDropdown.innerHTML = `<i class="fas fa-user"></i><span class="user-text">${displayName}</span>`;
-                        userDropdown.title = `Logged in as: ${user.email}`;
-                    }
-                    
-                    // Show user-specific elements
-                    if (welcomeMessage) welcomeMessage.style.display = 'flex';
-                    if (dashboardLink) dashboardLink.style.display = 'flex';
-                    if (logoutBtn) logoutBtn.style.display = 'flex';
-                    if (loginLink) loginLink.style.display = 'none';
-                    
-                    console.log('✅ User dropdown updated:', user.email);
-                } else {
-                    // No user signed in
-                    if (userEmailElement) {
-                        userEmailElement.textContent = 'Not logged in';
-                    }
-                    if (userDropdown) {
-                        userDropdown.innerHTML = '<i class="fas fa-user"></i><span class="user-text">Account</span>';
-                    }
-                    
-                    // Hide user-specific elements
-                    if (welcomeMessage) welcomeMessage.style.display = 'none';
-                    if (dashboardLink) dashboardLink.style.display = 'none';
-                    if (logoutBtn) logoutBtn.style.display = 'none';
-                    if (loginLink) loginLink.style.display = 'flex';
-                    
-                    console.log('❌ No user signed in');
                 }
-            }            
-            // Logout function
-            function logoutUser() {
-                signOut(auth).then(() => {
-                    console.log('✅ User signed out');
-                    window.location.href = 'index.html'; // Redirect to home after logout
-                }).catch((error) => {
-                    console.error('❌ Logout error:', error);
-                    alert('Logout failed: ' + error.message);
+                
+                // Logout function
+                function logoutUser() {
+                    auth.signOut().then(() => {
+                        console.log('✅ User signed out');
+                        window.location.href = 'index.html';
+                    }).catch((error) => {
+                        console.error('❌ Logout error:', error);
+                        alert('Logout failed: ' + error.message);
+                    });
+                }
+                
+                // Auth state listener
+                auth.onAuthStateChanged((user) => {
+                    if (user) {
+                        console.log('🔥 User signed in:', user.email);
+                        window.currentFirebaseUser = user;
+                        updateUserDropdown(user);
+                    } else {
+                        console.log('❌ No user signed in');
+                        updateUserDropdown(null);
+                    }
                 });
+                
+                // Make functions available globally
+                window.logoutUser = logoutUser;
+                window.updateUserDropdown = updateUserDropdown;
+                
+            } catch (error) {
+                console.error('❌ Firebase initialization error:', error);
             }
-            
-            // Auth state listener
-            onAuthStateChanged(auth, (user) => {
-                if (user) {
-                    console.log('🔥 User signed in:', user.email);
-                    window.currentFirebaseUser = user;
-                    updateUserDropdown(user);
-                    
-                    // Update page title with user's name if on dashboard
-                    const pageTitle = document.querySelector('.page-title');
-                    if (pageTitle && window.location.pathname.includes('userdashboard.html')) {
-                        const userName = user.displayName || user.email.split('@')[0];
-                        pageTitle.textContent = `${userName}'s Dashboard`;
-                    }
-                } else {
-                    console.log('❌ No user signed in');
-                    updateUserDropdown(null);
-                }
-            });
-            
-            // Make logout function available globally
-            window.logoutUser = logoutUser;
-        </script>
-
+        });
+    </script>
 </head>
 <body>
     <header>
@@ -280,24 +286,47 @@
         ? 'https://pawfectfind-backend.azurewebsites.net' 
         : 'http://localhost:8000';
 
-    // ===== FIREBASE AUTH FUNCTIONS =====
+            // ===== SAFE FIREBASE ACCESS =====
+    function getFirebaseAuth() {
+        // Try multiple ways to access auth safely
+        if (window.firebaseAuth) {
+            return window.firebaseAuth;
+        }
+        if (typeof firebase !== 'undefined' && firebase.auth) {
+            return firebase.auth();
+        }
+        throw new Error('Firebase not initialized yet. Please wait for page to load.');
+    }
+ // ===== FIREBASE AUTH FUNCTIONS =====
     async function getCurrentFirebaseUser() {
         return new Promise((resolve) => {
-            const unsubscribe = auth.onAuthStateChanged((user) => {
-                unsubscribe();
-                resolve(user);
-            });
+            try {
+                const auth = getFirebaseAuth();
+                const unsubscribe = auth.onAuthStateChanged((user) => {
+                    unsubscribe();
+                    resolve(user);
+                });
+            } catch (error) {
+                console.error('Error getting Firebase user:', error);
+                resolve(null);
+            }
         });
     }
 
     async function checkUserLoggedIn() {
-        const user = await getCurrentFirebaseUser();
-        if (!user) {
-            alert('Please log in to make a booking');
-            window.location.href = 'login.html';
+        try {
+            const user = await getCurrentFirebaseUser();
+            if (!user) {
+                alert('Please log in to make a booking');
+                window.location.href = 'login.html';
+                return false;
+            }
+            return true;
+        } catch (error) {
+            console.error('Error checking login status:', error);
+            alert('Authentication error. Please refresh the page and try again.');
             return false;
         }
-        return true;
     }
 
     // Get booking details from URL parameters or localStorage
@@ -434,131 +463,131 @@
         if (paymentConfirmation) paymentConfirmation.style.display = 'block';
     }
 
-        async function processPayment() {
-            try {
-                // Show processing state
-                const submitBtn = document.getElementById('submitPayment');
-                if (submitBtn) {
-                    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing Payment...';
-                    submitBtn.disabled = true;
-                }
+    async function processPayment() {
+        try {
+            // Show processing state
+            const submitBtn = document.getElementById('submitPayment');
+            if (submitBtn) {
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing Payment...';
+                submitBtn.disabled = true;
+            }
 
-                // Check if user is logged in
-                const isLoggedIn = await checkUserLoggedIn();
-                if (!isLoggedIn) return;
+            // Check if user is logged in
+            const isLoggedIn = await checkUserLoggedIn();
+            if (!isLoggedIn) return;
 
-                // Save booking to database first
-                await saveBookingToDatabase();
-                
-                // Then show success
-                showSuccessModal();
+            // Save booking to database first
+            await saveBookingToDatabase();
+            
+            // Then show success
+            showSuccessModal();
 
-            } catch (error) {
-                console.error('Payment processing failed:', error);
-                alert('Payment failed: ' + error.message);
-                
-                // Reset button
-                const submitBtn = document.getElementById('submitPayment');
-                if (submitBtn) {
-                    submitBtn.innerHTML = '<i class="fas fa-lock"></i> Confirm Payment';
-                    submitBtn.disabled = false;
-                }
+        } catch (error) {
+            console.error('Payment processing failed:', error);
+            alert('Payment failed: ' + error.message);
+            
+            // Reset button
+            const submitBtn = document.getElementById('submitPayment');
+            if (submitBtn) {
+                submitBtn.innerHTML = '<i class="fas fa-lock"></i> Confirm Payment';
+                submitBtn.disabled = false;
             }
         }
+    }
 
-async function saveBookingToDatabase() {
-    try {
-        const customerInfo = JSON.parse(localStorage.getItem('customerInfo') || '{}');
-        
-        // Get current Firebase user
-        const user = await getCurrentFirebaseUser();
-        if (!user) {
-            throw new Error('Please log in to make a booking');
+    async function saveBookingToDatabase() {
+        try {
+            const customerInfo = JSON.parse(localStorage.getItem('customerInfo') || '{}');
+            
+            // Get current Firebase user
+            const user = await getCurrentFirebaseUser();
+            if (!user) {
+                throw new Error('Please log in to make a booking');
+            }
+
+            // Extract numeric price from string (e.g., "$80" -> 80.00)
+            const priceMatch = bookingData.price?.match(/\$?(\d+(\.\d+)?)/);
+            const numericPrice = priceMatch ? parseFloat(priceMatch[1]) : 0;
+            
+            // Format date for database (YYYY-MM-DD)
+            const bookingDate = new Date(bookingData.date);
+            const formattedDate = bookingDate.toISOString().split('T')[0];
+            
+            const bookingPayload = {
+                user_id: user.uid, // Firebase User ID
+                service_type: bookingData.service,
+                vendor_name: bookingData.vendor,
+                booking_date: formattedDate,
+                booking_time: bookingData.time,
+                price: numericPrice,
+                customer_name: customerInfo.name,
+                customer_email: customerInfo.email,
+                customer_phone: customerInfo.phone,
+                special_instructions: customerInfo.instructions
+            };
+
+            console.log('💾 Saving booking for Firebase user:', user.uid);
+
+            const response = await fetch(`${API_BASE_URL}/api/bookings`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(bookingPayload)
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to save booking to database');
+            }
+
+            const result = await response.json();
+            console.log('✅ Booking saved to database for user:', user.uid);
+            return result;
+
+        } catch (error) {
+            console.error('❌ Error saving booking:', error);
+            throw error;
         }
+    }
 
-        // Extract numeric price from string (e.g., "$80" -> 80.00)
-        const priceMatch = bookingData.price?.match(/\$?(\d+(\.\d+)?)/);
-        const numericPrice = priceMatch ? parseFloat(priceMatch[1]) : 0;
-        
-        // Format date for database (YYYY-MM-DD)
-        const bookingDate = new Date(bookingData.date);
-        const formattedDate = bookingDate.toISOString().split('T')[0];
-        
-        const bookingPayload = {
-            user_id: user.uid, // ← Firebase User ID
-            service_type: bookingData.service,
-            vendor_name: bookingData.vendor,
-            booking_date: formattedDate,
-            booking_time: bookingData.time,
-            price: numericPrice,
-            customer_name: customerInfo.name,
-            customer_email: customerInfo.email,
-            customer_phone: customerInfo.phone,
-            special_instructions: customerInfo.instructions
-        };
+    function generateBookingId() {
+        return 'PF-' + Date.now() + '-' + Math.random().toString(36).substr(2, 6).toUpperCase();
+    }
 
-        console.log('💾 Saving booking for Firebase user:', user.uid);
-
-        const response = await fetch(`${API_BASE_URL}/api/bookings`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(bookingPayload)
+    function showSuccessModal() {
+        // Get Firebase user for display
+        getCurrentFirebaseUser().then(user => {
+            const bookingRefEl = document.getElementById('bookingReference');
+            if (bookingRefEl) {
+                bookingRefEl.innerHTML = `
+                    <strong>Booking Reference:</strong> ${generateBookingId()}<br>
+                    <strong>User:</strong> ${user?.email || 'Logged in user'}<br>
+                    <strong>Status:</strong> <span style="color: green;">✅ Saved to Database</span><br>
+                    <small>This booking is now in your calendar</small>
+                `;
+            }
         });
-
-        if (!response.ok) {
-            throw new Error('Failed to save booking to database');
+        
+        const successModal = document.getElementById('successModal');
+        if (successModal) {
+            successModal.style.display = 'block';
         }
-
-        const result = await response.json();
-        console.log('✅ Booking saved to database for user:', user.uid);
-        return result;
-
-    } catch (error) {
-        console.error('❌ Error saving booking:', error);
-        throw error;
+        
+        // Clear localStorage after successful booking
+        setTimeout(() => {
+            ['bookingService', 'bookingVendor', 'bookingVendorId', 'bookingDate', 'bookingTime', 'bookingPrice', 'customerInfo'].forEach(key => {
+                localStorage.removeItem(key);
+            });
+        }, 2000);
     }
-}
 
-function generateBookingId() {
-    return 'PF-' + Date.now() + '-' + Math.random().toString(36).substr(2, 6).toUpperCase();
-}
-
-function showSuccessModal() {
-    // Get Firebase user for display
-    getCurrentFirebaseUser().then(user => {
-        const bookingRefEl = document.getElementById('bookingReference');
-        if (bookingRefEl) {
-            bookingRefEl.innerHTML = `
-                <strong>Booking Reference:</strong> ${generateBookingId()}<br>
-                <strong>User:</strong> ${user?.email || 'Logged in user'}<br>
-                <strong>Status:</strong> <span style="color: green;">✅ Saved to Database</span><br>
-                <small>This booking is now in your calendar</small>
-            `;
+    function closeModal() {
+        const successModal = document.getElementById('successModal');
+        if (successModal) {
+            successModal.style.display = 'none';
         }
-    });
-    
-    const successModal = document.getElementById('successModal');
-    if (successModal) {
-        successModal.style.display = 'block';
+        window.location.href = 'userdashboard.html';
     }
-    
-    // Clear localStorage after successful booking
-    setTimeout(() => {
-        ['bookingService', 'bookingVendor', 'bookingVendorId', 'bookingDate', 'bookingTime', 'bookingPrice', 'customerInfo'].forEach(key => {
-            localStorage.removeItem(key);
-        });
-    }, 2000);
-}
-
-function closeModal() {
-    const successModal = document.getElementById('successModal');
-    if (successModal) {
-        successModal.style.display = 'none';
-    }
-    window.location.href = 'userdashboard.html'; // Redirect to dashboard to see the booking
-}
 </script>
 
     <script>
